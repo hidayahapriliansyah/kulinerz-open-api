@@ -1,0 +1,440 @@
+openapi: '3.0.2'
+info:
+  title: Kulinerz App
+  version: '1.0'
+  description: OpenAPI for Kulinerz App contains all of service for customer, resto, location, and image upload.
+  termsOfService: https://kulinez.id/terms-of-service
+  contact:
+    email: adimuhamadfirmansyah@gmai.com
+    name: Adi Muhamad Firmansyah
+    url: hidayahapriliansyah.me
+  license:
+    name: Kulinerz
+    url: https://kulinez.id/licence
+servers:
+  - url: https://{environment}.kulinerz.id/api/v2
+    description: Server Environment
+    variables:
+      environment:
+        default: dev
+        enum:
+          - 'dev'
+          - 'qa'
+          - 'api'
+externalDocs:
+  url: https://www.notion.so/API-Specs-f5f3dd561cdc4e35a57b6fdc451bcf03
+paths:
+  /province:
+    get:
+      tags:
+        - Location
+      description: Return all province
+      security:
+        - RestoAccessTokenAuth: []
+      responses:
+        '200':
+          description: Return province list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            province:
+                              type:  string
+              examples:
+                Success:
+                  description: Success get all province
+                  value:
+                    {
+                      "success": true,
+                      "message": "Getting provinces data successfully.",
+                      "data": [
+                        {
+                          "id": "31",
+                          "province": "DKI JAKARTA"
+                        },
+                        {
+                          "id": "32",
+                          "province": "JAWA BARAT"
+                        },
+                        {
+                          "id": "33",
+                          "province": "JAWA TENGAH"
+                        },
+                        {
+                          "id": "34",
+                          "province": "DI YOGYAKARTA"
+                        },
+                        {
+                          "id": "35",
+                          "province": "JAWA TIMUR"
+                        }
+                      ]
+                    }
+        '401':
+          $ref: '#/components/responses/RestoAccessTokenError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /regency:
+    get: 
+      tags:
+        - Location
+      description: Return regency list base on selected province
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ProvinceId'
+      responses:
+        '200':
+          description: Success to get regecy list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            provinceId:
+                              type: string
+                            regency:
+                              type:  string
+              example:
+                {
+                  "success": true,
+                  "message": "Getting regencies data successfully.",
+                  "data":
+                    [
+                      {
+                        "id": "3204",
+                        "provinceId": "32",
+                        "regency": "KABUPATEN BANDUNG"
+                      },
+                      {
+                        "id": "3205",
+                        "provinceId": "32",
+                        "regency": "KABUPATEN GARUT"
+                      },
+                      {
+                        "id": "3206",
+                        "provinceId": "32",
+                        "regency": "KABUPATEN TASIKMALAYA"
+                      }
+                    ]
+                }
+        '404':
+          description: Regency from province id provinceId is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorAPIResponse'
+              example:
+                {
+                  "success": false,
+                  "message": "Resource not found. Province id provinceId is not exist."
+                }
+        '401':
+          $ref: '#/components/responses/RestoAccessTokenError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /district:
+    get:
+      tags:
+        - Location
+      description: Return district list base on selected regency
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - name: regencyId
+          in: query
+          required: true
+          description: Regency id
+          schema:
+            type: string
+            nullable: false
+            default: 
+      responses:
+        '200':
+          description: Success to get district list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            regencyId:
+                              type: string
+                            district:
+                              type:  string
+              example:
+                {
+                  "success": true,
+                  "message": "Getting district data successfully",
+                  "data":
+                    [
+                      {
+                        "id": "3206160",
+                        "regencyId": "3206",
+                        "district": "MANONJAYA"
+                      },
+                      {
+                        "id": "3206161",
+                        "regencyId": "3206",
+                        "district": "GUNUNGTANJUNG"
+                      },
+                      {
+                        "id": "3206190",
+                        "regencyId": "3206",
+                        "district": "SINGAPARNA"
+                      }
+                    ]
+                }
+        '401':
+          $ref: '#/components/responses/RestoAccessTokenError'
+        '404':
+          description: Regency from province id is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorAPIResponse'
+              example:
+                {
+                  "success": false,
+                  "message": "Resource not found. regency id regencyId is not exist."
+                }
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /village:
+    get:
+      tags:
+        - Location
+      description: Return list of village
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - name: districtId
+          in: query
+          required: true
+          description: District Id
+          schema:
+            type: string
+            nullable: false
+            default: 
+      responses:
+        '200':
+          description: Success to get village list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            districtId:
+                              type: string
+                            village:
+                              type:  string
+              example:
+                {
+                  "success": true,
+                  "data": [
+                    {
+                      "id": "3206161001",
+                      "districtId": "3206161",
+                      "village": "CINUNJANG"
+                    },
+                    {
+                      "id": "3206161002",
+                      "districtId": "3206161",
+                      "village": "MALATISUKA"
+                    },
+                    {
+                      "id": "3206161003",
+                      "districtId": "3206161",
+                      "village": "GIRIWANGI"
+                    },
+                    {
+                      "id": "3206161004",
+                      "districtId": "3206161",
+                      "village": "JATIJAYA"
+                    },
+                    {
+                      "id": "3206161005",
+                      "districtId": "3206161",
+                      "village": "GUNUNGTANJUNG"
+                    }
+                  ]
+                }
+        '401':
+          $ref: '#/components/responses/RestoAccessTokenError'
+        '404':
+          description: Village from district id is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorAPIResponse'
+              example:
+                {
+                  "success": false,
+                  "message": "Resource not found. district id districtId is not exist."
+                }
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  securitySchemes:
+    RestoAccessTokenAuth:
+      description: Access token for user resto
+      type: apiKey
+      in: cookie
+      name: iertu8r54g734r23u4jrwoefuefudf328HYKDLMGSusr
+  parameters:
+    ProvinceId:
+      name: provinceId
+      in: query
+      required: true
+      description: Province id
+      schema: 
+        type: string
+        nullable: false
+        default: 
+  schemas:
+    ErrorAPIResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+        - message
+    SuccessAPIResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        data: 
+          oneOf:
+            - type: array
+            - type: object
+      required:
+        - success
+        - message
+    ValidationErrorAPIResponse:
+      allOf:
+        - $ref: '#/components/schemas/ErrorAPIResponse'
+        - type: object
+          properties:
+            errors:
+              type: array
+              items:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  field:
+                    type: string
+      required:
+        - success
+        - message
+        - errors
+  examples:
+    AuthenticationError:
+      value:
+        success: false
+        message: Access denied. Please authenticate to access this resource.
+    AuthenticationErrorAccessTokenExpired:
+      value:
+        success: false
+        message: Token is expired.
+        data:
+          token: 550e8400-e29b-41d4-a716-44665544000
+  responses:
+    RestoAccessTokenError:
+      description: Access Token Error
+      content:
+        application/json:
+          schema:
+            oneOf: 
+              - $ref: '#/components/schemas/ErrorAPIResponse'
+              - allOf:
+                - $ref: '#/components/schemas/ErrorAPIResponse'
+                - type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        token:
+                          type: string
+                  required:
+                    - success
+                    - message
+          examples:
+              AuthenticationError:
+                value:
+                  {
+                    "success": false,
+                    "message": "Access denied. Please authenticate to access this resource."
+                  }
+              AuthenticationErrorAccessTokenExpired:
+                value:
+                  {
+                    "success": false,
+                    "message": "Token is expired.",
+                    "data": {
+                      "token": "550e8400-e29b-41d4-a716-44665544000"
+                    }
+                  }
+              AuthenticationErrorRefreshTokenExpired:
+                value:
+                  {
+                    "success": false,
+                    "message": "Token is expired."
+                  }
+    ServerError:
+      description: Error response if some unknown error happen to the server
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorAPIResponse'
+          example:
+            {
+              "success": false,
+              "message": "Something went wrong. Try again later."
+            }
+
+
+# RESTO_ACCESS_TOKEN_COOKIE_NAME=iertu8r54g734r23u4jrwoefuefudf328HYKDLMGSusr
+# CUSTOMER_ACCESS_TOKEN_COOKIE_NAME=45237rh0341wirjfuwaer723UHFYsdgfwer8wehYYg

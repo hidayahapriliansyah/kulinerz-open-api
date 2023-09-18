@@ -310,6 +310,195 @@ paths:
                 }
         '500':
           $ref: '#/components/responses/ServerError'
+  /resto/auth/signin:
+    post:
+      tags:
+        - Resto
+        - Resto Auth
+      description: API for admin resto to signin via form
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              {
+                "email": "adimuhamadfirmansyah@gmail.com",
+                "password": "rahasiabangetpokoknyahehehehehe"
+              }
+      responses:
+        '200':
+          description: Signin Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessSigninResponse'
+              example:
+                $ref: '#/components/examples/SuccessSigninResponse'
+        '404':
+          description: Credential error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorAPIResponse'
+              example:
+                {
+                  "success": false,
+                  "message": "Credential Error. User is not exist."
+                }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorAPIResponse'
+              example:
+                {
+                  "success": false,
+                  "message": "email or password body payload is missing."
+                }
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /resto/auth/signin/google:
+    get:
+      tags:
+        - Resto
+        - Resto Auth
+      description: API for admin resto to sign in via Google Oauth
+      responses:
+        '200':
+          description: Sigin via oauth is success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessSigninResponse'
+              example:
+                $ref: '#/components/examples/SuccessSigninResponse'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /resto/auth/signup:
+    post:
+      description: API for admin resto to sign up via form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              {
+                "name": "Restaurant Example",
+                "username": "examplerestaurant",
+                "email": "restaurant@gmail.com",
+                "password": "password1234!@#$"
+              }
+      responses:
+        '201':
+          description: New user resto created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Signup successfully.",
+                  "data": {
+                    "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                  }
+                }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorAPIResponse'
+              example: 
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors" : [
+                      {
+                          "message": "Nama restoran minimal memiliki 3 karakter",
+                          "field": "name"
+                      },
+                      {
+                          "message": "Email harus diisi",
+                          "field": "email"
+                      }
+                  ]
+                }
+        '409':
+          description: Conflict Error. Duplicate username or email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorAPIResponse'
+              examples:
+                Username:
+                  value:
+                    {
+                      "success": false,
+                      "message": "username is exist. Please use another."
+                    }
+                Email:
+                  value:
+                    {
+                      "success": false,
+                      "message": "email is exist. Please use another."
+                    }
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /resto/auth/signup/google:
+    get:
+      description: API for admin resto to sign in via Google Oauth
+      responses:
+        '200':
+          description: Sigin via oauth is success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessSigninResponse'
+              example:
+                $ref: '#/components/examples/SuccessSigninResponse'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /resto/auth/signout:
+    get:
+      description: API for admin resto to sign out
+      responses:
+        '200':
+          description: Signout success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAPIResponse'
+              example:
+                {
+                  "success": true,
+                  "message": "Sign out successfully."
+                }
 components:
   securitySchemes:
     RestoAccessTokenAuth:
@@ -370,17 +559,44 @@ components:
         - success
         - message
         - errors
+    SuccessSigninResponse:
+      allOf:
+      - $ref: '#/components/schemas/SuccessAPIResponse'
+      - type: object
+        properties:
+          data:
+            type: object
+            properties:
+              userId:
+                type: string
+              token:
+                type: string
   examples:
     AuthenticationError:
       value:
-        success: false
-        message: Access denied. Please authenticate to access this resource.
+        {
+          "success": false,
+          "message": "Access denied. Please authenticate to access this resource."
+        }
     AuthenticationErrorAccessTokenExpired:
       value:
-        success: false
-        message: Token is expired.
-        data:
-          token: 550e8400-e29b-41d4-a716-44665544000
+        {
+          "success": false,
+          "message": "Token is expired.",
+          "data": {
+            "token": "550e8400-e29b-41d4-a716-44665544000"
+          }
+        }
+    SuccessSigninResponse:
+      value:
+        {
+          "success": true,
+          "message": "Signin successfully.",
+          "data": {
+            "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+            "token": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          }
+        }
   responses:
     RestoAccessTokenError:
       description: Access Token Error

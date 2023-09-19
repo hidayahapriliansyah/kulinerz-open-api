@@ -735,12 +735,14 @@ paths:
           $ref: "#/components/responses/RestoConflictError"
         "500":
           $ref: "#/components/responses/ServerError"
-  /resto/profile/setup:
+  /resto/profile/setup/:
     put:
       tags:
         - Resto
         - Resto Profile
       description: API to update restaurant profile information after signnup using oauth
+      security:
+        - RestoAccessTokenAuth: []
       requestBody:
         content:
           application/json:
@@ -813,6 +815,8 @@ paths:
         - Resto
         - Resto Profile
       description: API to update restaurant customer payment type
+      security:
+        - RestoAccessTokenAuth: []
       requestBody:
         content:
           application/json:
@@ -871,6 +875,247 @@ paths:
                   $ref: "#/components/examples/RestoEmailIsNotVerifiedError"
         "500":
           $ref: "#/components/responses/ServerError"
+  /resto/account/verification/:
+    post:
+      tags:
+        - Resto
+        - Resto Account
+      description: API to update restaurant customer payment type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: "#/components/schemas/Email"
+            example: { "email": "restorancontoh@gmail.com" }
+      responses:
+        "200":
+          description: Success to send email verification request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Success sending email verification request to system.",
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Validation errors in your request.",
+                  "errors":
+                    [{ "message": "email tidak valid", "field": "email" }],
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/account/verification/{uniqueString}:
+    get:
+      tags:
+        - Resto
+        - Resto Account
+      description: API to update restaurant customer payment type
+      parameters:
+        - $ref: "#/components/parameters/UniqueString"
+      responses:
+        "200":
+          description: Success to verify email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Email verification is valid. This account is now verified.Email verification is valid. This account is now verified.",
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "uniqueString param is missing.",
+                }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Verification Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Verification request is not found.",
+                    }
+                Restaurant Not Found:
+                  value:
+                    { "success": false, "message": "Restaurant is not found." }
+        "409":
+          description: Email already verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Email address already verified. You have already verified your email address.",
+                }
+        "498":
+          description: Request Id (uniqueString) is expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Request Id is expired. Please make a new verification request.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/account/reset/request:
+    post:
+      description: API for sending reset password request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: "#/components/schemas/Email"
+            example: { "email": "restorancontoh@gmail.com" }
+      responses:
+        "200":
+          description: Success to send reset password request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Success sending reset password request to system",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/account/reset/{uniqueString}:
+    get:
+      description: API to update check reset password reset request
+      parameters:
+        - $ref: "#/components/parameters/UniqueString"
+      responses:
+        "200":
+          description: Success to verify request reset password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Request password is valid. Please continue to create the new password.",
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "uniqueString param is missing.",
+                }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": false, "message": "Request is not found." }
+        "498":
+          description: Request Id (uniqueString) is expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Request Id is expired. Please make a new verification request.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/account/reset/confirmation:
+    post:
+      description: Create new password via reset password request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  $ref: "#/components/schemas/Password"
+                requestId:
+                  type: string
+              required:
+                - password
+                - requestId
+            example:
+              {
+                "password": "newpassword123!@#",
+                "requestId": "550e8400-e29b-41d4-a716-44665544000",
+              }
+      responses:
+        "200":
+          description: Success to create new password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "New password saved successfully. Please continue to sign in.",
+                }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": false, "message": "Request is not found." }
+        "498":
+          description: Request Id (uniqueString) is expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Request Id is expired. Please make a new verification request.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+
 components:
   securitySchemes:
     RestoAccessTokenAuth:
@@ -888,6 +1133,13 @@ components:
         type: string
         nullable: false
         default:
+    UniqueString:
+      name: uniqueString
+      in: path
+      required: true
+      description: unique string uuid v4
+      schema:
+        type: string
   schemas:
     ErrorAPIResponse:
       type: object

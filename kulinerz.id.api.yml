@@ -650,16 +650,7 @@ paths:
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
         "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorAPIResponse"
-              examples:
-                RestoEmailIsNotVerifiedError:
-                  $ref: "#/components/examples/RestoEmailIsNotVerifiedError"
-                RestoMinimumSetupError:
-                  $ref: "#/components/examples/RestoMinimumSetupError"
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
         "500":
           $ref: "#/components/responses/ServerError"
     put:
@@ -731,6 +722,8 @@ paths:
                 }
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
         "409":
           $ref: "#/components/responses/RestoConflictError"
         "500":
@@ -865,14 +858,7 @@ paths:
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
         "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorAPIResponse"
-              examples:
-                RestoEmailIsNotVerifiedError:
-                  $ref: "#/components/examples/RestoEmailIsNotVerifiedError"
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
         "500":
           $ref: "#/components/responses/ServerError"
   /resto/account/verification/:
@@ -1115,7 +1101,510 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
-
+  /menus/etalase:
+    get:
+      tags:
+        - Resto
+        - Resto Menus
+      description: API to get restaurant etalase
+      security:
+        - RestoAccessTokenAuth: []
+      responses:
+        "200":
+          description: Success get all restaurant etalase
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                          required:
+                            - id
+                            - name
+                    required:
+                      - success
+                      - message
+                      - data
+                example:
+                  {
+                    "success": true,
+                    "message": "Success to get elatase data.",
+                    "data":
+                      [
+                        {
+                          "id": "550e8400-e29b-41d4-a716-44665544000",
+                          "name": "Pedas",
+                        },
+                        {
+                          "id": "550e8400-e29b-41d4-a716-44665544000",
+                          "name": "Minuman Segar",
+                        },
+                      ],
+                  }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Resto
+        - Resto Menus
+      description: API to create restaurant etalase
+      security:
+        - RestoAccessTokenAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateEtalase"
+      responses:
+        "201":
+          description: Success to create etalase
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIReturnEtalaseIdResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Success to create etalase",
+                  "data":
+                    { "etalaseId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /menus/etalase/{etalaseId}:
+    put:
+      tags:
+        - Resto
+        - Resto Menus
+      description: API to update restaurant etalase
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/EtalaseId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateEtalase"
+      responses:
+        "200":
+          description: Success to update etalase
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIReturnEtalaseIdResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Success to update etalase",
+                  "data":
+                    { "etalaseId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                { "success": false, "message": "EetalasId param is missing." }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": false, "message": "Etalase is not found." }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Resto
+        - Resto Menus
+      description: API to delete restaurant etalase
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/EtalaseId"
+      responses:
+        "200":
+          description: Success to delete etalase
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIReturnEtalaseIdResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Success to delete etalase",
+                  "data":
+                    { "etalaseId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                EtalaseId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "etalasId param is missing.",
+                    }
+                Etalase has menu:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Etalase with menus can not be deleted. Please ensure the etalase is empty before attempting deletion.",
+                    }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": false, "message": "Etalase is not found." }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /menus:
+    get:
+      tags:
+        - Resto
+        - Resto Menus
+      description: API to get all restaurant menus
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/LimitPagination"
+        - $ref: "#/components/parameters/PagePagination"
+        - name: isActive
+          in: query
+          required: false
+          description: filter menu isActive
+          schema:
+            type: string
+            enum:
+              - "0"
+              - "1"
+      responses:
+        "200":
+          description: Success get all menus
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          menus:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                name:
+                                  type: string
+                                isActive:
+                                  type: boolean
+                                price:
+                                  type: number
+                              required:
+                                - id
+                                - name
+                                - isActive
+                                - price
+                          pages:
+                            type: number
+                            description: Count of many page of data will be divided
+                          total:
+                            type: number
+                            description: Total of all found data
+                        required:
+                          - menus
+                          - pages
+                          - total
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Resto
+        - Resto Menus
+      description: API to get all restaurant menus
+      security:
+        - RestoAccessTokenAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateMenu"
+      responses:
+        "201":
+          description: Success to create menu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          menuId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Creating menu successfully.",
+                  "data": { "menuId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors":
+                    [
+                      {
+                        "message": "name harus berupa a-z A-Z 0-9 . ' -",
+                        "field": "name",
+                      },
+                    ],
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Etalase Id not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": true, "message": "Etalase is not found." }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /menus/{slug}:
+    get:
+      tags:
+        - Resto
+        - Resto Menus
+      description: API to get menu detail by slug
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: Slug of menu title
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get menu detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                { "success": true, "message": "Success to get menu data." }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Menu not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": true, "message": "Menu is not found." }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /menus/{menuId}:
+    put:
+      tags:
+        - Resto
+        - Resto Menus
+      description: API to update menu
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - name: menuId
+          in: path
+          description: Menu Id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateMenu"
+      responses:
+        "200":
+          description: Success to update menu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          menuId:
+                            type: string
+                        required:
+                          - menuId
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                {
+                  "success": true,
+                  "message": "Updating menu successfully.",
+                  "data": { "menuId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                Validation Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors":
+                        [
+                          {
+                            "message": "name harus berupa a-z A-Z 0-9 . ' -",
+                            "field": "name",
+                          },
+                        ],
+                    }
+                menuId Param Missing:
+                  value:
+                    { "success": false, "message": "menuId param is missing." }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Etalase Id not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": true, "message": "Etalase is not found." }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Resto
+        - Resto Menus
+      description: API to update menu
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - name: menuId
+          in: path
+          description: Menu Id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to delete menu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          menuId:
+                            type: string
+                        required:
+                          - menuId
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                {
+                  "success": true,
+                  "message": "Deleting menu successfully.",
+                  "data": { "menuId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                { "success": false, "message": "menuId param is missing." }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Menu not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Menu Id not found. Please input valid id menu.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
 components:
   securitySchemes:
     RestoAccessTokenAuth:
@@ -1140,6 +1629,29 @@ components:
       description: unique string uuid v4
       schema:
         type: string
+    EtalaseId:
+      name: etalaseId
+      in: path
+      required: true
+      description: unique string uuid v4
+      schema:
+        type: string
+    LimitPagination:
+      name: limit
+      in: query
+      required: false
+      description: limit of displayed data
+      schema:
+        type: string
+        default: "10"
+    PagePagination:
+      name: page
+      in: query
+      required: false
+      description: limit of displayed data
+      schema:
+        type: string
+        default: "1"
   schemas:
     ErrorAPIResponse:
       type: object
@@ -1181,6 +1693,22 @@ components:
         - success
         - message
         - data
+    SuccessAPIReturnEtalaseIdResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessAPIResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                etalaseId:
+                  type: string
+              required:
+                - etalaseId
+          required:
+            - success
+            - message
+            - data
     ValidationErrorAPIResponse:
       allOf:
         - $ref: "#/components/schemas/ErrorAPIResponse"
@@ -1322,6 +1850,60 @@ components:
               "token": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
             },
         }
+  requestBodies:
+    CreateAndUpdateEtalase:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 20
+            required:
+              - name
+          example: { "name": "Makanan" }
+    CreateAndUpdateMenu:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 80
+                pattern: /^[a-zA-Z0-9.'\s-]+$/
+              isBungkusAble:
+                type: boolean
+              description:
+                type: string
+                minLength: 1
+                maxLength: 3000
+              etalaseId:
+                type: string
+              price:
+                type: number
+              images:
+                type: array
+                items:
+                  type: string
+                minItems: 1
+                maxItems: 5
+              maxSpicy:
+                type: number
+                nullable: true
+                default: null
+            required:
+              - name
+              - isBungkusAble
+              - description
+              - etalaseId
+              - price
+              - images
+          example:
+            # engke
   responses:
     RestoAccessTokenError:
       description: Access Token Error
@@ -1368,6 +1950,17 @@ components:
                   "success": false,
                   "message": "email is exist. Please use another.",
                 }
+    RestoVerificationAndMinimumSetupMiddlewareError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorAPIResponse"
+          examples:
+            RestoEmailIsNotVerifiedError:
+              $ref: "#/components/examples/RestoEmailIsNotVerifiedError"
+            RestoMinimumSetupError:
+              $ref: "#/components/examples/RestoMinimumSetupError"
     ServerError:
       description: Error response if some unknown error happen to the server
       content:

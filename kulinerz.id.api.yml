@@ -1,7 +1,7 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 info:
   title: Kulinerz App
-  version: '1.0'
+  version: "1.0"
   description: OpenAPI for Kulinerz App contains all of service for customer, resto, location, and image upload.
   termsOfService: https://kulinez.id/terms-of-service
   contact:
@@ -18,9 +18,9 @@ servers:
       environment:
         default: dev
         enum:
-          - 'dev'
-          - 'qa'
-          - 'api'
+          - "dev"
+          - "qa"
+          - "api"
 externalDocs:
   url: https://www.notion.so/API-Specs-f5f3dd561cdc4e35a57b6fdc451bcf03
 paths:
@@ -32,13 +32,13 @@ paths:
       security:
         - RestoAccessTokenAuth: []
       responses:
-        '200':
+        "200":
           description: Return province list
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
                   - type: object
                     properties:
                       data:
@@ -49,7 +49,7 @@ paths:
                             id:
                               type: string
                             province:
-                              type:  string
+                              type: string
               examples:
                 Success:
                   description: Success get all province
@@ -57,50 +57,36 @@ paths:
                     {
                       "success": true,
                       "message": "Getting provinces data successfully.",
-                      "data": [
-                        {
-                          "id": "31",
-                          "province": "DKI JAKARTA"
-                        },
-                        {
-                          "id": "32",
-                          "province": "JAWA BARAT"
-                        },
-                        {
-                          "id": "33",
-                          "province": "JAWA TENGAH"
-                        },
-                        {
-                          "id": "34",
-                          "province": "DI YOGYAKARTA"
-                        },
-                        {
-                          "id": "35",
-                          "province": "JAWA TIMUR"
-                        }
-                      ]
+                      "data":
+                        [
+                          { "id": "31", "province": "DKI JAKARTA" },
+                          { "id": "32", "province": "JAWA BARAT" },
+                          { "id": "33", "province": "JAWA TENGAH" },
+                          { "id": "34", "province": "DI YOGYAKARTA" },
+                          { "id": "35", "province": "JAWA TIMUR" },
+                        ],
                     }
-        '401':
-          $ref: '#/components/responses/RestoAccessTokenError'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /regency:
-    get: 
+    get:
       tags:
         - Location
       description: Return regency list base on selected province
       security:
         - RestoAccessTokenAuth: []
       parameters:
-        - $ref: '#/components/parameters/ProvinceId'
+        - $ref: "#/components/parameters/ProvinceId"
       responses:
-        '200':
+        "200":
           description: Success to get regecy list
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
                   - type: object
                     properties:
                       data:
@@ -113,7 +99,7 @@ paths:
                             provinceId:
                               type: string
                             regency:
-                              type:  string
+                              type: string
               example:
                 {
                   "success": true,
@@ -123,35 +109,35 @@ paths:
                       {
                         "id": "3204",
                         "provinceId": "32",
-                        "regency": "KABUPATEN BANDUNG"
+                        "regency": "KABUPATEN BANDUNG",
                       },
                       {
                         "id": "3205",
                         "provinceId": "32",
-                        "regency": "KABUPATEN GARUT"
+                        "regency": "KABUPATEN GARUT",
                       },
                       {
                         "id": "3206",
                         "provinceId": "32",
-                        "regency": "KABUPATEN TASIKMALAYA"
-                      }
-                    ]
+                        "regency": "KABUPATEN TASIKMALAYA",
+                      },
+                    ],
                 }
-        '404':
+        "404":
           description: Regency from province id provinceId is not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorAPIResponse'
+                $ref: "#/components/schemas/ErrorAPIResponse"
               example:
                 {
                   "success": false,
-                  "message": "Resource not found. Province id provinceId is not exist."
+                  "message": "Resource not found. Province id provinceId is not exist.",
                 }
-        '401':
-          $ref: '#/components/responses/RestoAccessTokenError'
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /district:
     get:
       tags:
@@ -167,15 +153,15 @@ paths:
           schema:
             type: string
             nullable: false
-            default: 
+            default:
       responses:
-        '200':
+        "200":
           description: Success to get district list
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
                   - type: object
                     properties:
                       data:
@@ -188,7 +174,7 @@ paths:
                             regencyId:
                               type: string
                             district:
-                              type:  string
+                              type: string
               example:
                 {
                   "success": true,
@@ -198,35 +184,35 @@ paths:
                       {
                         "id": "3206160",
                         "regencyId": "3206",
-                        "district": "MANONJAYA"
+                        "district": "MANONJAYA",
                       },
                       {
                         "id": "3206161",
                         "regencyId": "3206",
-                        "district": "GUNUNGTANJUNG"
+                        "district": "GUNUNGTANJUNG",
                       },
                       {
                         "id": "3206190",
                         "regencyId": "3206",
-                        "district": "SINGAPARNA"
-                      }
-                    ]
+                        "district": "SINGAPARNA",
+                      },
+                    ],
                 }
-        '401':
-          $ref: '#/components/responses/RestoAccessTokenError'
-        '404':
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "404":
           description: Regency from province id is not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorAPIResponse'
+                $ref: "#/components/schemas/ErrorAPIResponse"
               example:
                 {
                   "success": false,
-                  "message": "Resource not found. regency id regencyId is not exist."
+                  "message": "Resource not found. regency id regencyId is not exist.",
                 }
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "500":
+          $ref: "#/components/responses/ServerError"
   /village:
     get:
       tags:
@@ -242,15 +228,15 @@ paths:
           schema:
             type: string
             nullable: false
-            default: 
+            default:
       responses:
-        '200':
+        "200":
           description: Success to get village list
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
                   - type: object
                     properties:
                       data:
@@ -263,53 +249,54 @@ paths:
                             districtId:
                               type: string
                             village:
-                              type:  string
+                              type: string
               example:
                 {
                   "success": true,
-                  "data": [
-                    {
-                      "id": "3206161001",
-                      "districtId": "3206161",
-                      "village": "CINUNJANG"
-                    },
-                    {
-                      "id": "3206161002",
-                      "districtId": "3206161",
-                      "village": "MALATISUKA"
-                    },
-                    {
-                      "id": "3206161003",
-                      "districtId": "3206161",
-                      "village": "GIRIWANGI"
-                    },
-                    {
-                      "id": "3206161004",
-                      "districtId": "3206161",
-                      "village": "JATIJAYA"
-                    },
-                    {
-                      "id": "3206161005",
-                      "districtId": "3206161",
-                      "village": "GUNUNGTANJUNG"
-                    }
-                  ]
+                  "data":
+                    [
+                      {
+                        "id": "3206161001",
+                        "districtId": "3206161",
+                        "village": "CINUNJANG",
+                      },
+                      {
+                        "id": "3206161002",
+                        "districtId": "3206161",
+                        "village": "MALATISUKA",
+                      },
+                      {
+                        "id": "3206161003",
+                        "districtId": "3206161",
+                        "village": "GIRIWANGI",
+                      },
+                      {
+                        "id": "3206161004",
+                        "districtId": "3206161",
+                        "village": "JATIJAYA",
+                      },
+                      {
+                        "id": "3206161005",
+                        "districtId": "3206161",
+                        "village": "GUNUNGTANJUNG",
+                      },
+                    ],
                 }
-        '401':
-          $ref: '#/components/responses/RestoAccessTokenError'
-        '404':
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "404":
           description: Village from district id is not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorAPIResponse'
+                $ref: "#/components/schemas/ErrorAPIResponse"
               example:
                 {
                   "success": false,
-                  "message": "Resource not found. district id districtId is not exist."
+                  "message": "Resource not found. district id districtId is not exist.",
                 }
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "500":
+          $ref: "#/components/responses/ServerError"
   /resto/auth/signin:
     post:
       tags:
@@ -319,7 +306,7 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: 
+            schema:
               type: object
               properties:
                 email:
@@ -329,41 +316,41 @@ paths:
             example:
               {
                 "email": "adimuhamadfirmansyah@gmail.com",
-                "password": "rahasiabangetpokoknyahehehehehe"
+                "password": "rahasiabangetpokoknyahehehehehe",
               }
       responses:
-        '200':
+        "200":
           description: Signin Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessSigninResponse'
+                $ref: "#/components/schemas/SuccessSigninResponse"
               example:
-                $ref: '#/components/examples/SuccessSigninResponse'
-        '404':
+                $ref: "#/components/examples/SuccessSigninResponse"
+        "404":
           description: Credential error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorAPIResponse'
+                $ref: "#/components/schemas/ErrorAPIResponse"
               example:
                 {
                   "success": false,
-                  "message": "Credential Error. User is not exist."
+                  "message": "Credential Error. User is not exist.",
                 }
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorAPIResponse'
+                $ref: "#/components/schemas/ErrorAPIResponse"
               example:
                 {
                   "success": false,
-                  "message": "email or password body payload is missing."
+                  "message": "email or password body payload is missing.",
                 }
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "500":
+          $ref: "#/components/responses/ServerError"
   /resto/auth/signin/google:
     get:
       tags:
@@ -371,18 +358,21 @@ paths:
         - Resto Auth
       description: API for admin resto to sign in via Google Oauth
       responses:
-        '200':
+        "200":
           description: Sigin via oauth is success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessSigninResponse'
+                $ref: "#/components/schemas/SuccessSigninResponse"
               example:
-                $ref: '#/components/examples/SuccessSigninResponse'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                $ref: "#/components/examples/SuccessSigninResponse"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /resto/auth/signup:
     post:
+      tags:
+        - Resto
+        - Resto Auth
       description: API for admin resto to sign up via form
       requestBody:
         content:
@@ -391,28 +381,33 @@ paths:
               type: object
               properties:
                 name:
-                  type: string
+                  $ref: "#/components/schemas/RestoName"
                 username:
-                  type: string
+                  $ref: "#/components/schemas/Username"
                 email:
-                  type: string
+                  $ref: "#/components/schemas/Email"
                 password:
-                  type: string
+                  $ref: "#/components/schemas/Password"
+              required:
+                - name
+                - username
+                - email
+                - password
             example:
               {
                 "name": "Restaurant Example",
                 "username": "examplerestaurant",
                 "email": "restaurant@gmail.com",
-                "password": "password1234!@#$"
+                "password": "password1234!@#$",
               }
       responses:
-        '201':
+        "201":
           description: New user resto created
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessAPIResponse'
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
                   - type: object
                     properties:
                       data:
@@ -424,81 +419,458 @@ paths:
                 {
                   "success": true,
                   "message": "Signup successfully.",
-                  "data": {
-                    "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
-                  }
+                  "data": { "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479" },
                 }
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationErrorAPIResponse'
-              example: 
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
                 {
                   "success": false,
                   "message": "Validation errors in your request.",
-                  "errors" : [
+                  "errors":
+                    [
                       {
-                          "message": "Nama restoran minimal memiliki 3 karakter",
-                          "field": "name"
+                        "message": "Nama restoran minimal memiliki 3 karakter",
+                        "field": "name",
                       },
-                      {
-                          "message": "Email harus diisi",
-                          "field": "email"
-                      }
-                  ]
+                      { "message": "Email harus diisi", "field": "email" },
+                    ],
                 }
-        '409':
+        "409":
           description: Conflict Error. Duplicate username or email
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorAPIResponse'
+                $ref: "#/components/schemas/ErrorAPIResponse"
               examples:
                 Username:
                   value:
                     {
                       "success": false,
-                      "message": "username is exist. Please use another."
+                      "message": "username is exist. Please use another.",
                     }
                 Email:
                   value:
                     {
                       "success": false,
-                      "message": "email is exist. Please use another."
+                      "message": "email is exist. Please use another.",
                     }
-        '500':
-          $ref: '#/components/responses/ServerError'
+        "500":
+          $ref: "#/components/responses/ServerError"
   /resto/auth/signup/google:
     get:
+      tags:
+        - Resto
+        - Resto Auth
       description: API for admin resto to sign in via Google Oauth
       responses:
-        '200':
+        "200":
           description: Sigin via oauth is success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessSigninResponse'
+                $ref: "#/components/schemas/SuccessSigninResponse"
               example:
-                $ref: '#/components/examples/SuccessSigninResponse'
-        '500':
-          $ref: '#/components/responses/ServerError'
+                $ref: "#/components/examples/SuccessSigninResponse"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /resto/auth/signout:
     get:
+      tags:
+        - Resto
+        - Resto Auth
       description: API for admin resto to sign out
       responses:
-        '200':
+        "200":
           description: Signout success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessAPIResponse'
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example: { "success": true, "message": "Sign out successfully." }
+  /resto/profile:
+    get:
+      tags:
+        - Resto
+        - Resto Profile
+      description: API to get restaurant profile information
+      security:
+        - RestoAccessTokenAuth: []
+      responses:
+        "200":
+          description: Success to get profile
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          avatar:
+                            type: string
+                          username:
+                            type: string
+                          name:
+                            type: string
+                          address:
+                            nullable: true
+                            type: object
+                            properties:
+                              provinceId:
+                                nullable: true
+                                type: string
+                              regencyId:
+                                nullable: true
+                                type: string
+                              districtId:
+                                nullable: true
+                                type: string
+                              villageId:
+                                nullable: true
+                                type: string
+                              locationLink:
+                                nullable: true
+                                type: string
+                              detail:
+                                nullable: true
+                                type: string
+                          contact:
+                            nullable: true
+                            type: string
+                          imageGallery:
+                            type: array
+                          bussinessHours:
+                            type: object
+                            properties:
+                              openingHours:
+                                nullable: true
+                                type: string
+                              closingHours:
+                                nullable: true
+                                type: string
+                              daysOff:
+                                type: array
+                          fasilities:
+                            type: array
+              examples:
+                Complete:
+                  value:
+                    {
+                      "success": true,
+                      "message": "Get restaurant profile data successfully.",
+                      "data":
+                        {
+                          "avatar": "avatar.jpg",
+                          "username": "rumahmakancontoh",
+                          "name": "Rumah Makan Contoh",
+                          "address":
+                            {
+                              "provinceId": "11",
+                              "regencyId": "1101",
+                              "districtId": "1101010",
+                              "villageId": "1101010001",
+                              "locationLink": "https://www.google.com/maps/d/viewer?mid=1LS-Yj--ntUP_auDwGCayJkbNFig&hl=en_US&ll=5.538846584005121%2C95.3387842076674&z=14",
+                              "detail": "Kampung apa alamat mana jalan mana bebas",
+                            },
+                          "contact": "08123456789",
+                          "imageGallery":
+                            [
+                              "http://image.example.com/image1",
+                              "http://image.example.com/image2",
+                              "http://image.example.com/image3",
+                              "http://image.example.com/image4",
+                              "http://image.example.com/image5",
+                            ],
+                          "bussinessHours":
+                            {
+                              "openingHour": "08:00",
+                              "closingHour": "22:00",
+                              "daysOff": ["Saturday", "Sunday"],
+                            },
+                          "fasilities":
+                            [
+                              "Wi-Fi Gratis",
+                              "Area Merokok/Area bebas asap rokok",
+                            ],
+                        },
+                    }
+                Uncomplete:
+                  value:
+                    {
+                      {
+                        "success": true,
+                        "message": "Get restaurant profile data successfully.",
+                        "data":
+                          {
+                            "avatar": "avatar.jpg",
+                            "username": "rumahmakancontoh",
+                            "name": "Rumah Makan Contoh",
+                            "address": null,
+                            "contact": "08123456789",
+                            "imageGallery": [],
+                            "bussinessHours":
+                              {
+                                "openingHour": "08:00",
+                                "closingHour": "22:00",
+                                "daysOff": ["Saturday", "Sunday"],
+                              },
+                            "fasilities": [],
+                          },
+                      },
+                    }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors":
+                    [
+                      {
+                        "message": "username harus berupa huruf kecil, number, titik atau underscore.",
+                        "field": "username",
+                      },
+                      {
+                        "message": "name harus berupa a-zA-Z 0-9 . , - '",
+                        "field": "name",
+                      },
+                    ],
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                RestoEmailIsNotVerifiedError:
+                  $ref: "#/components/examples/RestoEmailIsNotVerifiedError"
+                RestoMinimumSetupError:
+                  $ref: "#/components/examples/RestoMinimumSetupError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    put:
+      tags:
+        - Resto
+        - Resto Profile
+      description: API to update restaurant profile information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  $ref: "#/components/schemas/Avatar"
+                username:
+                  $ref: "#/components/schemas/Username"
+                name:
+                  $ref: "#/components/schemas/RestoName"
+                villageId:
+                  $ref: "#/components/schemas/VillageId"
+                locationLink:
+                  $ref: "#/components/schemas/RestoLocationLink"
+                detail:
+                  $ref: "#/components/schemas/RestoDetail"
+                contact:
+                  $ref: "#/components/schemas/RestoContact"
+                imageGallery:
+                  $ref: "#/components/schemas/RestoImageGallery"
+                openingHour:
+                  $ref: "#/components/schemas/RestoOpeningHour"
+                closingHour:
+                  $ref: "#/components/schemas/RestoClosingHour"
+                daysOff:
+                  $ref: "#/components/schemas/RestoDaysOff"
+                fasilities:
+                  $ref: "#/components/schemas/RestoFasilities"
+      responses:
+        "200":
+          description: Success update profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIReturnUserIdResponse"
               example:
                 {
                   "success": true,
-                  "message": "Sign out successfully."
+                  "message": "Update restaurant profile data successfully.",
+                  "data": { "userId": "550e8400-e29b-41d4-a716-44665544000" },
                 }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors":
+                    [
+                      {
+                        "message": "Nama restoran minimal memiliki 3 karakter",
+                        "field": "name",
+                      },
+                      { "message": "Email harus diisi", "field": "email" },
+                    ],
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "409":
+          $ref: "#/components/responses/RestoConflictError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/profile/setup:
+    put:
+      tags:
+        - Resto
+        - Resto Profile
+      description: API to update restaurant profile information after signnup using oauth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  $ref: "#/components/schemas/Username"
+                name:
+                  $ref: "#/components/schemas/RestoName"
+                password:
+                  $ref: "#/components/schemas/Password"
+            example:
+              {
+                "username": "rumahmakancontoh",
+                "name": "Rumah Makan Contoh",
+                "password": "password1232323",
+              }
+      responses:
+        "200":
+          description: Success to setup profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIReturnUserIdResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Update restaurant profile data successfully.",
+                  "data": { "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479" },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors":
+                    [
+                      {
+                        "message": "username harus berupa huruf kecil, number, titik atau underscore.",
+                        "field": "username",
+                      },
+                      {
+                        "message": "name harus berupa a-zA-Z 0-9 . , - '",
+                        "field": "name",
+                      },
+                    ],
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                RestoEmailIsNotVerifiedError:
+                  $ref: "#/components/examples/RestoEmailIsNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/profile/customer-payment-type:
+    put:
+      tags:
+        - Resto
+        - Resto Profile
+      description: API to update restaurant customer payment type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customerPayment:
+                  type: string
+                  enum:
+                    - AFTER_ORDER
+                    - BEFORE_ORDER
+              required:
+                - customerPayment
+            example: { "customerPayment": "BEFORE_ORDER" }
+      responses:
+        "200":
+          description: Success update customer payment type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIReturnUserIdResponse"
+              example:
+                {
+                  "success": true,
+                  "message": Update restaurant customer payment type successfully.",
+                  "data": { "userId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors":
+                    [
+                      {
+                        "message": "customerPayment tidak valid.",
+                        "field": "customerPayment",
+                      },
+                    ],
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                RestoEmailIsNotVerifiedError:
+                  $ref: "#/components/examples/RestoEmailIsNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
 components:
   securitySchemes:
     RestoAccessTokenAuth:
@@ -512,10 +884,10 @@ components:
       in: query
       required: true
       description: Province id
-      schema: 
+      schema:
         type: string
         nullable: false
-        default: 
+        default:
   schemas:
     ErrorAPIResponse:
       type: object
@@ -534,16 +906,32 @@ components:
           type: boolean
         message:
           type: string
-        data: 
+        data:
           oneOf:
             - type: array
             - type: object
       required:
         - success
         - message
+    SuccessAPIReturnUserIdResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessAPIResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                userId:
+                  type: string
+              required:
+                - userId
+      required:
+        - success
+        - message
+        - data
     ValidationErrorAPIResponse:
       allOf:
-        - $ref: '#/components/schemas/ErrorAPIResponse'
+        - $ref: "#/components/schemas/ErrorAPIResponse"
         - type: object
           properties:
             errors:
@@ -561,41 +949,126 @@ components:
         - errors
     SuccessSigninResponse:
       allOf:
-      - $ref: '#/components/schemas/SuccessAPIResponse'
-      - type: object
-        properties:
-          data:
-            type: object
-            properties:
-              userId:
-                type: string
-              token:
-                type: string
+        - $ref: "#/components/schemas/SuccessAPIResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                userId:
+                  type: string
+                token:
+                  type: string
+    RestoName:
+      type: string
+      minLength: 3
+      maxLength: 50
+      pattern: /^[a-zA-Z0-9.,_\s-]+$/
+    Username:
+      type: string
+      minLength: 3
+      maxLength: 30
+      pattern: /^[a-z0-9._']+$/
+    Email:
+      type: string
+      minLength: 1
+      maxLength: 254
+    Password:
+      type: string
+      minLength: 6
+    Avatar:
+      type: string
+    VillageId:
+      type: string
+    RestoLocationLink:
+      type: string
+      nullable: true
+    RestoDetail:
+      type: string
+      maxLength: 200
+      nullable: true
+    RestoContact:
+      type: string
+      maxLength: 14
+      nullable: true
+    RestoImageGallery:
+      type: array
+      items:
+        type: string
+      maxItems: 5
+    RestoOpeningHour:
+      type: string
+      maxLength: 5
+      pattern: /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
+      nullable: true
+    RestoClosingHour:
+      type: string
+      maxLength: 5
+      pattern: /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
+      nullable: true
+    RestoDaysOff:
+      type: array
+      items:
+        type: string
+        enum:
+          - sunday
+          - monday
+          - tuesday
+          - wednesday
+          - thursday
+          - friday
+          - saturday
+          - sunday
+    RestoFasilities:
+      type: array
+      items:
+        type: string
+      maxItems: 100
   examples:
+    # error response
     AuthenticationError:
       value:
         {
           "success": false,
-          "message": "Access denied. Please authenticate to access this resource."
+          "message": "Access denied. Please authenticate to access this resource.",
         }
     AuthenticationErrorAccessTokenExpired:
       value:
         {
           "success": false,
           "message": "Token is expired.",
-          "data": {
-            "token": "550e8400-e29b-41d4-a716-44665544000"
-          }
+          "data": { "token": "550e8400-e29b-41d4-a716-44665544000" },
         }
+    AuthenticationErrorRefreshTokenExpired:
+      value:
+        {
+          "success": false,
+          "message": "Token is expired.",
+          "data": { "token": "550e8400-e29b-41d4-a716-44665544000" },
+        }
+    RestoEmailIsNotVerifiedError:
+      value:
+        {
+          "success": true,
+          "message": "Access denied. Please verify your email.",
+        }
+    RestoMinimumSetupError:
+      value:
+        {
+          "success": false,
+          "message": "Your account has not completed the minimum profile setup. Please complete your profile before using the application features.",
+        }
+    # success response
     SuccessSigninResponse:
       value:
         {
           "success": true,
           "message": "Signin successfully.",
-          "data": {
-            "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-            "token": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
-          }
+          "data":
+            {
+              "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+              "token": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+            },
         }
   responses:
     RestoAccessTokenError:
@@ -603,54 +1076,56 @@ components:
       content:
         application/json:
           schema:
-            oneOf: 
-              - $ref: '#/components/schemas/ErrorAPIResponse'
+            oneOf:
+              - $ref: "#/components/schemas/ErrorAPIResponse"
               - allOf:
-                - $ref: '#/components/schemas/ErrorAPIResponse'
-                - type: object
-                  properties:
-                    data:
-                      type: object
-                      properties:
-                        token:
-                          type: string
-                  required:
-                    - success
-                    - message
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          token:
+                            type: string
+                    required:
+                      - success
+                      - message
           examples:
-              AuthenticationError:
-                value:
-                  {
-                    "success": false,
-                    "message": "Access denied. Please authenticate to access this resource."
-                  }
-              AuthenticationErrorAccessTokenExpired:
-                value:
-                  {
-                    "success": false,
-                    "message": "Token is expired.",
-                    "data": {
-                      "token": "550e8400-e29b-41d4-a716-44665544000"
-                    }
-                  }
-              AuthenticationErrorRefreshTokenExpired:
-                value:
-                  {
-                    "success": false,
-                    "message": "Token is expired."
-                  }
+            AuthenticationError:
+              $ref: "#/components/examples/AuthenticationError"
+            AuthenticationErrorAccessTokenExpired:
+              $ref: "#/components/examples/AuthenticationErrorAccessTokenExpired"
+            AuthenticationErrorRefreshTokenExpired:
+              $ref: "#/components/examples/AuthenticationErrorRefreshTokenExpired"
+    RestoConflictError:
+      description: Conflict Error. Duplicate username or email
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorAPIResponse"
+          examples:
+            Username:
+              value:
+                {
+                  "success": false,
+                  "message": "username is exist. Please use another.",
+                }
+            Email:
+              value:
+                {
+                  "success": false,
+                  "message": "email is exist. Please use another.",
+                }
     ServerError:
       description: Error response if some unknown error happen to the server
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorAPIResponse'
+            $ref: "#/components/schemas/ErrorAPIResponse"
           example:
             {
               "success": false,
-              "message": "Something went wrong. Try again later."
+              "message": "Something went wrong. Try again later.",
             }
-
-
 # RESTO_ACCESS_TOKEN_COOKIE_NAME=iertu8r54g734r23u4jrwoefuefudf328HYKDLMGSusr
 # CUSTOMER_ACCESS_TOKEN_COOKIE_NAME=45237rh0341wirjfuwaer723UHFYsdgfwer8wehYYg

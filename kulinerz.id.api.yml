@@ -1101,7 +1101,7 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
-  /menus/etalase:
+  /resto/menus/etalase:
     get:
       tags:
         - Resto
@@ -1186,7 +1186,7 @@ paths:
           $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
         "500":
           $ref: "#/components/responses/ServerError"
-  /menus/etalase/{etalaseId}:
+  /resto/menus/etalase/{etalaseId}:
     put:
       tags:
         - Resto
@@ -1288,7 +1288,7 @@ paths:
               example: { "success": false, "message": "Etalase is not found." }
         "500":
           $ref: "#/components/responses/ServerError"
-  /menus:
+  /resto/menus:
     get:
       tags:
         - Resto
@@ -1396,7 +1396,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
               example:
                 {
                   "success": false,
@@ -1422,7 +1424,7 @@ paths:
               example: { "success": true, "message": "Etalase is not found." }
         "500":
           $ref: "#/components/responses/ServerError"
-  /menus/{slug}:
+  /resto/menus/{slug}:
     get:
       tags:
         - Resto
@@ -1459,7 +1461,7 @@ paths:
               example: { "success": true, "message": "Menu is not found." }
         "500":
           $ref: "#/components/responses/ServerError"
-  /menus/{menuId}:
+  /resto/menus/{menuId}:
     put:
       tags:
         - Resto
@@ -1605,6 +1607,677 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
+  /resto/custom-menu/categories:
+    get:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to get all custom menu category
+      security:
+        - RestoAccessTokenAuth: []
+      responses:
+        "200":
+          description: Success to get list custom menu categories
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                          required:
+                            - id
+                            - name
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to get create custom menu category
+      security:
+        - RestoAccessTokenAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateCustomMenuCategory"
+      responses:
+        "200":
+          description: Success to create custom menu category
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customMenuCateogryId:
+                            type: string
+                        required:
+                          - customMenuCateogryId
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                {
+                  "success": true,
+                  "message": "Creating menu successfully.",
+                  "data":
+                    {
+                      "customMenuCategoryId": "550e8400-e29b-41d4-a716-44665544000",
+                    },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors":
+                    [
+                      {
+                        "message": "name maksimal memiliki 50 karakter.",
+                        "field": "name",
+                        s,
+                      },
+                    ],
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/custom-menu/categories/{categoryId}:
+    get:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to get specific menu category detail by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/CategoryId"
+      responses:
+        "200":
+          description: Success to get custom menu category detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          isBungkusAble:
+                            type: boolean
+                          maxSpicy:
+                            type: number
+                            nullable: true
+                        required:
+                          - id
+                          - name
+                          - isBungkusAble
+                          - maxSpicy
+                    required:
+                      - success
+                      - message
+                      - data
+                example:
+                  # engke
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "404":
+          description: Custom Menu Category is not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Custom menu category is not found.",
+                }
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    put:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to update specific menu category detail by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/CategoryId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateCustomMenuCategory"
+      responses:
+        "200":
+          description: Success to update custom menu category
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customMenuCateogryId:
+                            type: string
+                        required:
+                          - customMenuCateogryId
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                {
+                  "success": true,
+                  "message": "Updating category custom menu successfully.",
+                  "data":
+                    {
+                      "customMenuCategoryId": "550e8400-e29b-41d4-a716-44665544000",
+                    },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Validation Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors":
+                        [
+                          {
+                            "message": "name maksimal memiliki 50 karakter.",
+                            "field": "name",
+                            s,
+                          },
+                        ],
+                    }
+                categoryId Param is Missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "categoryId param is missing.",
+                    }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": false, "message": "Menu is not found." }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to delete specific custom menu category detail by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/CategoryId"
+      responses:
+        "200":
+          description: Success to delete custom menu category
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customMenuCateogryId:
+                            type: string
+                        required:
+                          - customMenuCateogryId
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                {
+                  "success": true,
+                  "message": "Success to delete custom menu category data.",
+                  "data":
+                    {
+                      "customMenuCategoryId": "550e8400-e29b-41d4-a716-44665544000",
+                    },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                { "success": false, "message": "categoryId param is missing." }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": false, "message": "Menu is not found." }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/custom-menu/compositions:
+    get:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to get all custom menu composition
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/LimitPagination"
+        - $ref: "#/components/parameters/PagePagination"
+        - name: category
+          in: query
+          required: false
+          description: Custom menu category id
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: false
+          description: Custom menu composition name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get all custom menu composition
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          isBungkusAble:
+                            type: boolean
+                          maxSpicy:
+                            type: number
+                            nullable: true
+                        required:
+                          - id
+                          - name
+                          - isBungkusAble
+                          - maxSpicy
+                    required:
+                      - success
+                      - message
+                      - data
+                example:
+                  # engke
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Input page is bigger than total pages.",
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "404":
+          description: Custom Menu Category is not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Custom menu category is not found.",
+                }
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to get all custom menu composition
+      security:
+        - RestoAccessTokenAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateCustomMenuComposition"
+      responses:
+        "201":
+          description: Success to create custom menu composition
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customMenuCompositionId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Creating menu successfully.",
+                  "data":
+                    {
+                      "customMenuCompositionId": "550e8400-e29b-41d4-a716-44665544000",
+                    },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors":
+                    [
+                      {
+                        "message": "description minimal memiliki 1 karakter.",
+                        "field": "description",
+                      },
+                      {
+                        "message": "image maksimal memiliki 2 item.",
+                        "field": "image",
+                      },
+                    ],
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Custom Menu Category is not found.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/custom-menu/compositions/{compositionId}:
+    get:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to get detail custom menu composition by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/CustomMenuCompositionId"
+      responses:
+        "200":
+          description: Success to get custom menu composition detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          customMenuCategoryId:
+                            type: string
+                          description:
+                            type: string
+                          price:
+                            type: number
+                          stock:
+                            type: number
+                          images:
+                            nullable: true
+                            type: array
+                            items:
+                              type: string
+                        required:
+                          - id
+                          - customMenuCategoryId
+                          - description
+                          - price
+                          - stock
+                          - images
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Composition Custom Menu is not found.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    put:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to update custom menu composition by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/CustomMenuCompositionId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateCustomMenuComposition"
+      responses:
+        "200":
+          description: Success to update custom menu composition
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customMenuCompositionId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Updating custom menu composition successfully.",
+                  "data":
+                    {
+                      "customMenuCompositionId": "550e8400-e29b-41d4-a716-44665544000",
+                    },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                compostionId is Missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "compositionId param is missing.",
+                    }
+                Validation Input Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors":
+                        [
+                          {
+                            "message": "description minimal memiliki 1 karakter.",
+                            "field": "description",
+                          },
+                          {
+                            "message": "image maksimal memiliki 2 item.",
+                            "field": "image",
+                          },
+                        ],
+                    }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Custom Menu Composition Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Custom Menu Composition is not found.",
+                    }
+                Custom Menu Category Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Custom Menu Category is not found.",
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Resto
+        - Resto Custom Menu
+      description: API to delete custom menu composition by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/CustomMenuCompositionId"
+      responses:
+        "200":
+          description: Success to delete custom menu composition
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customMenuCompositionId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Deleting custom menu composition successfully.",
+                  "data":
+                    {
+                      "customMenuCompositionId": "550e8400-e29b-41d4-a716-44665544000",
+                    },
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Composition Custom Menu is not found.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
 components:
   securitySchemes:
     RestoAccessTokenAuth:
@@ -1634,6 +2307,20 @@ components:
       in: path
       required: true
       description: unique string uuid v4
+      schema:
+        type: string
+    CategoryId:
+      name: categoryId
+      in: path
+      description: Custom Menu Category Id
+      required: true
+      schema:
+        type: string
+    CustomMenuCompositionId:
+      name: compositionId
+      in: path
+      required: true
+      description: Custom Menu Composition Id
       schema:
         type: string
     LimitPagination:
@@ -1900,6 +2587,59 @@ components:
               - isBungkusAble
               - description
               - etalaseId
+              - price
+              - images
+          example:
+            # engke
+    CreateAndUpdateCustomMenuCategory:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 50
+              isBungkusAble:
+                type: boolean
+                default: false
+              maxSpicy:
+                type: number
+                nullable: true
+            required:
+              - name
+    CreateAndUpdateCustomMenuComposition:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              customMenuCategoryId:
+                type: string
+              name:
+                type: string
+                minLength: 1
+                maxLength: 80
+              description:
+                type: string
+                minLength: 1
+                maxLength: 3000
+              price:
+                type: number
+              images:
+                type: array
+                items:
+                  type: string
+                minItems: 1
+                maxItems: 2
+              stock:
+                type: number
+                default: 0
+            required:
+              - customMenuCategoryId
+              - name
+              - description
               - price
               - images
           example:

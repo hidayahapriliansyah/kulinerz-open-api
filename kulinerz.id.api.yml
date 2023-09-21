@@ -3627,7 +3627,192 @@ paths:
               schema:
                 $ref: "#/components/schemas/SuccessAPIResponse"
               example: { "success": true, "message": "Sign out successfully." }
-  # /profile:
+  /profile:
+    get:
+      tags:
+        - Customer
+        - Customer Profile
+      description: API to get customer profile
+      security:
+        - CustomerAccessTokenAuth: []
+      responses:
+        "200":
+          description: Success to get customer profile information
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          username:
+                            type: string
+                          name:
+                            type: string
+                          avatar:
+                            type: string
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    put:
+      tags:
+        - Customer
+        - Customer Profile
+      description: API to update customer profile
+      security:
+        - CustomerAccessTokenAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 30
+                  pattern: /^[a-z0-9._']+$/
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  pattern: /^[a-zA-Z.,_\s-]+$/
+            example:
+              # engke saja
+      responses:
+        "200":
+          description: Success update profile
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Update profile successfully.",
+                  "data": {
+                    "userId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": [
+                    {
+                      "message": "Username minimal memiliki 3 karakter.",
+                      "field": "username"
+                    },
+                    {
+                      "message": "Nama maksimal memiliki 50 karakter.",
+                      "field": "name"
+                    },
+                  ]
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "409":
+          $ref: "#/components/responses/CustomerConflictError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /profile/joinbotram:
+    put:
+      tags:
+        - Customer
+        - Customer Profile
+      description: API to update customer join botram setting
+      security:
+        - CustomerAccessTokenAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                joinBotram:
+                  type: string
+                  enum:
+                    - DIRECTLY
+                    - INVITATION
+                    - BYSELF
+            example:
+              {
+                "joinBotram": "BYSELF"
+              }
+      responses:
+        "200":
+          description: Success to update join botram setting
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Update join botram method successfully.",
+                  "data": {
+                    "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": [
+                    {
+                      "message": "'Status valid antara 'DIRECTLY', 'INVITATION', 'BYSELF'",
+                      "field": "joinBotram"
+                    }
+                  ]
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /restaurant:
   # /wishlist:
   # /custom-menu:
@@ -3648,6 +3833,11 @@ components:
       type: apiKey
       in: cookie
       name: iertu8r54g734r23u4jrwoefuefudf328HYKDLMGSusr
+    CustomerAccessTokenAuth:
+      description: Access token for user customer
+      type: apiKey
+      in: cookie
+      name: 45237rh0341wirjfuwaer723UHFYsdgfwer8wehYYg
   parameters:
     ProvinceId:
       name: provinceId
@@ -4177,6 +4367,62 @@ components:
               $ref: "#/components/examples/RestoEmailIsNotVerifiedError"
             RestoMinimumSetupError:
               $ref: "#/components/examples/RestoMinimumSetupError"
+    CustomerAccessTokenError:
+      description: Access Token Error
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: "#/components/schemas/ErrorAPIResponse"
+              - allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          token:
+                            type: string
+                    required:
+                      - success
+                      - message
+          examples:
+            AuthenticationError:
+              $ref: "#/components/examples/AuthenticationError"
+            AuthenticationErrorAccessTokenExpired:
+              $ref: "#/components/examples/AuthenticationErrorAccessTokenExpired"
+            AuthenticationErrorRefreshTokenExpired:
+              $ref: "#/components/examples/AuthenticationErrorRefreshTokenExpired"
+    CustomerConflictError:
+      description: Conflict Error. Duplicate username or email
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorAPIResponse"
+          examples:
+            Username:
+              value:
+                {
+                  "success": false,
+                  "message": "username is exist. Please use another.",
+                }
+            Email:
+              value:
+                {
+                  "success": false,
+                  "message": "email is exist. Please use another.",
+                }
+    CustomerEmailNotVerifiedError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorAPIResponse"
+          example:
+            {
+              "success": false,
+              "message": "Access denied. Please verify your email."
+            }
     ServerError:
       description: Error response if some unknown error happen to the server
       content:

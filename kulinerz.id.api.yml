@@ -3398,7 +3398,249 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
-  # /resto/refresh-token/:
+  /resto/refresh-token/{refreshTokeValidator}/{token}:
+    get:
+      tags:
+        - Resto
+        - Resto Refresh Token
+      security:
+        - RestoAccessTokenAuth: []
+      description: Generate new access token through refresh token
+      parameters:
+        - name: refreshTokeValidator
+          in: path
+          required: true
+          description: Generate code because access token is expired
+          schema:
+            type: string
+        - name: token
+          in: path
+          required: true
+          description: The actual refresh token
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get new access token
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                            description: new generated contain resto id token
+              example:
+                {
+                  "success": true,
+                  "message": "Refresh token is valid.",
+                  "data": {
+                    "userId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  
+  /auth/signup:
+    post:
+      tags:
+        - Customer
+        - Customer Auth
+      description: Sign up for new customer user account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  pattern: /^[a-zA-Z.,_\s-']+$/
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 30
+                  pattern: /^[a-z0-9._]+$/
+                email:
+                  type: string
+                  maxLength: 254
+                password:
+                  type: string
+                  minLength: 6
+              required:
+                - name
+                - username
+                - email
+                - password
+            example:
+              # engke
+      responses:
+        "201":
+          description: Succes to signup and create new user customer account
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Signup successfully.",
+                  "data": {
+                    "userId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": [
+                    {
+                      "message": "Silakan gunakan karakter a-z 0-9 . _",
+                      "field": "username"
+                    }
+                  ]
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /auth/signup/google:
+    get:
+      tags:
+        - Customer
+        - Customer Auth
+      description: Sign up for new customer user account via oauth
+      responses:
+        "200":
+          description: Signup via oauth is success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessSigninResponse"
+              example:
+                $ref: "#/components/examples/SuccessSigninResponse"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /auth/signin:
+    post:
+      tags:
+        - Customer
+        - Customer Auth
+      description: Signin via form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              {
+                "email": "adimuhamadfirmansyah@gmail.com",
+                "password": "rahasiabangetpokoknyahehehehehe",
+              }
+      responses:
+        "200":
+          description: Signin Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessSigninResponse"
+              example:
+                $ref: "#/components/examples/SuccessSigninResponse"
+        "404":
+          description: Credential error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Credential Error. User is not exist.",
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "email or password body payload is missing.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /auth/signin/google:
+    get:
+      tags:
+        - Customer
+        - Customer Auth
+      description: Signin via oauth
+      responses:
+        "200":
+          description: Signin via oauth is success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessSigninResponse"
+              example:
+                $ref: "#/components/examples/SuccessSigninResponse"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /auth/signout:
+    get:
+      tags:
+        - Customer
+        - Customer Auth
+      description: API for customer to sign out
+      responses:
+        "200":
+          description: Signout success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example: { "success": true, "message": "Sign out successfully." }
+  # /profile:
+  # /restaurant:
+  # /wishlist:
+  # /custom-menu:
+  # /invitations:
+  # /botram:
+  # /cart:
+  # /my-cart:
+  # /botram-cart:
+  # /orders:
+  # /purchase:
+  # /account:
+  # /notifications:
+  # /refresh-token:
 components:
   securitySchemes:
     RestoAccessTokenAuth:

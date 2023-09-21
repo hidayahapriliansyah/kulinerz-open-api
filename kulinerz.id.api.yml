@@ -3002,7 +3002,402 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
-  # /resto/reviews/:
+  /resto/reviews/:
+    get:
+      tags:
+        - Resto
+        - Resto Review
+      description: API to get all restaurant review
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - name: rating
+          in: query
+          required: false
+          description: rating of review
+          schema:
+            type: string
+            enum:
+              - "1"
+              - "2"
+              - "3"
+              - "4"
+              - "5"
+        - name: isReplied
+          in: query
+          required: false
+          description: isReplied status of review
+          schema:
+            type: string
+            enum:
+              - "0"
+              - "1"
+        - $ref: "#/components/parameters/PagePagination"
+      responses:
+        "200":
+          description: Success to get all review
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            reviews:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                customer:
+                                  type: object
+                                  properties:
+                                    username:
+                                      type: string
+                                rating:
+                                  type: number
+                                reviewDescription:
+                                  type: string  
+                            pages:
+                              type: number
+                            total:
+                              type: number
+              example:
+                # engke
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Page Query:
+                  value:
+                    {
+                      "success": false,
+                      "message": "page query is not number."
+                    }
+                Rating Query:
+                  value:
+                    {
+                      "success": false,
+                      "message": "rating query is not valid."
+                    }
+                isReplied Query:
+                  value:
+                    {
+                      "success": false,
+                      "message": "isReplied query is not valid."
+                    }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/reviews/{reviewId}:
+    get:
+      tags:
+        - Resto
+        - Resto Review
+      description: API to get detail restaurant review by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ReviewId"
+      responses:
+        "200":
+          description: Success to get restaurant review detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          createdAt:
+                            type: string
+                          customer:
+                            type: object
+                            properties:
+                              username:
+                                type: string
+                              name:
+                                type: string
+                          rating:
+                            type: number
+                          hasCustomerBeenShoppingHere: 
+                            type: boolean
+                          reviewDescription: 
+                            type: string
+                          isReplied:
+                            type: boolean
+                          restaurantReviewResponse: 
+                            type: object
+                            nullable: true
+                            properties:
+                              id:
+                                type: string
+                              createdAt:
+                                type: string
+                              updatedAt:
+                                type: string
+                              responseDescription:
+                                type: string
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Review is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/reviews/{reviewId}/reply:
+    post:
+      tags:
+        - Resto
+        - Resto Review
+      description: API to create restaurant review response
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ReviewId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateReviewResponse"
+      responses:
+        "201":
+          description: Success to create restaurant review response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        properties:
+                          responseId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Reply a review successfully.",
+                  "data": {
+                    "responseId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                reviewId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "reviewId param is missing."
+                    }
+                Validation Input Payload Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors":
+                        [
+                          {
+                            "message": "Deskripsi harus memiliki setidaknya 1 karakter.",
+                            "field": "responseDescription"
+                          }
+                        ]
+                    }
+                Review Already has Response:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Review already has response. Fail to create response review.",
+                    }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Review is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/reviews/{responseId}/reply:
+    put:
+      tags:
+        - Resto
+        - Resto Review
+      description: API to update restaurant review response
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ReviewResponseId"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateReviewResponse"
+      responses:
+        "200":
+          description: Success to update restaurant review response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        properties:
+                          responseId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Update reply a review successfully.",
+                  "data": {
+                    "responseId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                responseId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "responseId param is missing."
+                    }
+                Validation Input Payload Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors":
+                        [
+                          {
+                            "message": "Deskripsi harus memiliki setidaknya 1 karakter.",
+                            "field": "responseDescription"
+                          }
+                        ]
+                    }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Review response is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Resto
+        - Resto Review
+      description: API to delete restaurant review response
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/ReviewResponseId"
+      responses:
+        "200":
+          description: Success to delete review response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          responseId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Delete reply of restaurant review successfully.",
+                  "data": {
+                    "responseId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "responseId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Review response is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /resto/refresh-token/:
 components:
   securitySchemes:
@@ -3061,6 +3456,20 @@ components:
       in: path
       required: true
       description: Custom Menu Composition Id
+      schema:
+        type: string
+    ReviewId:
+      name: reviewId
+      in: path
+      required: true
+      description: Review id
+      schema:
+        type: string
+    ReviewResponseId:
+      name: responseId
+      in: path
+      required: true
+      description: Review Response id
       schema:
         type: string
     LimitPagination:
@@ -3457,6 +3866,18 @@ components:
               - images
           example:
             # engke
+    CreateAndUpdateReviewResponse:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              responseDescription:
+                type: string
+                minLength: 1
+                maxLength: 250
+          example:
+              # engke
   responses:
     RestoAccessTokenError:
       description: Access Token Error

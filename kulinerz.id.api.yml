@@ -2460,7 +2460,548 @@ paths:
           $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
         "500":
           $ref: "#/components/responses/ServerError"
-  # /resto/orders/:
+  /resto/orders/:
+    get:
+      tags:
+        - Resto
+        - Resto Orders
+      description: API to get all order
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PagePagination"
+        - name: status
+          in: query
+          required: false
+          description: Order status
+          schema:
+            type: string
+            enum:
+              - READY_TO_ORDER
+              - ACCEPTED_BY_RESTO
+              - PROCESSED_BY_RESTO
+              - DONE_BY_RESTO
+              - ACCEPTED_BY_CUSTOMER
+              - CANCEL_BY_RESTO
+              - UNPAID
+        - name: startDate
+          in: query
+          required: false
+          description: Order filter time start date
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          required: false
+          description: Order filter time end date
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get order list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          orders:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                isGroup:
+                                  type: boolean
+                                customer:
+                                  type: object
+                                  properties:
+                                    username:
+                                      type: string
+                                    name:
+                                      type: string
+                                    image:
+                                      type: string
+                                total:
+                                  type: number
+                                status:
+                                  type: boolean
+                                isPaid:
+                                  type: boolean
+                          pages:
+                            type: number
+                          total:
+                            type: number
+              example:
+                # engke
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Page Query Not Number:
+                  value:
+                    { "success": false, "message": "page query is not number." }
+                startDate or endDate  is not valid:
+                  value:
+                    {
+                      "success": false,
+                      "message": "startDate or endDate query is not valid.",
+                    }
+                startDate is greatet than endDate:
+                  value:
+                    {
+                      "success": false,
+                      "message": "startDate is greater than endDate.",
+                    }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/orders/count:
+    get:
+      tags:
+        - Resto
+        - Resto Orders
+      description: API to get count order
+      security:
+        - RestoAccessTokenAuth: []
+      responses:
+        "200":
+          description: Succes to get count order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderSuccessResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Getting count order data successfully.",
+                  "data":
+                    {
+                      accepted: 5,
+                      processed: 5,
+                      done: 5,
+                      cancel: 5,
+                      total: 20,
+                    },
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/orders/today:
+    get:
+      tags:
+        - Resto
+        - Resto Orders
+      description: API to get today order
+      security:
+        - RestoAccessTokenAuth: []
+      responses:
+        "200":
+          description: Success to get today order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderSuccessResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Getting count order data successfully.",
+                  "data":
+                    {
+                      accepted: 5,
+                      processed: 5,
+                      done: 5,
+                      cancel: 5,
+                      total: 20,
+                    },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                { "success": true, "message": "page query is not number." }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/orders/find:
+    get:
+      tags:
+        - Resto
+        - Resto Orders
+      description: API to find order detail by customer username
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - name: customerUsername
+          in: query
+          required: true
+          description: Username of ordered Customer
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to find order by username customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDetailResponse"
+              example:
+              # engke
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "customerUsername query is missing.",
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                Customer Not Found:
+                  value:
+                    { "success": false, "message": "Customer is not found." }
+                Customer Order Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Customer order is not found.",
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/orders/{orderId}:
+    get:
+      tags:
+        - Resto
+        - Resto Orders
+      description: API to get order detail by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: Success to get order detail by order id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDetailResponse"
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": false, "message": "Order is not found." }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/orders/{orderId}/status:
+    put:
+      tags:
+        - Resto
+        - Resto Orders
+      description: API to get order status by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - ACCEPTED
+                    - PROCESSED
+                    - DONE
+                    - CANCEL
+              required:
+                - status
+      responses:
+        "200":
+          description: Success to update order status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          orderId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Updating order status successfully.",
+                  "data": { "orderId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "400":
+          $ref: "#/components/responses/UpdateOrderStatusBadRequestError"
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Order is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/orders/{orderId}/paid:
+    put:
+      tags:
+        - Resto
+        - Resto Orders
+      description: API to update order paid status by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: Success to update order paid status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          orderId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Updating order payment status successfully.",
+                  "data": {
+                    "orderId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                orderId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "orderId param is missing."
+                    }
+                Order has Paid:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Order status has been paid."
+                    }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Order is not found.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/orders/{botramOrderId}/botram/status:
+    put:
+      tags:
+        - Resto
+        - Resto Orders
+      description: API to update botram order paid status by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/BotramOrderId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - ACCEPTED
+                    - PROCESSED
+                    - DONE
+                    - CANCEL
+              required:
+                - status
+      responses:
+        "200":
+          description: Success to update botram order paid status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          orderId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Updating order status successfully.",
+                  "data": {
+                    "botramOrderId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          $ref: "#/components/responses/UpdateOrderStatusBadRequestError"
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Botram order is not found.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/orders/{botramOrderId}/botram/paid:
+    put:
+      tags:
+        - Resto
+        - Resto Orders
+      description: API to update botram order paid status by id
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: Success to update botram order status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          orderId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Updating order payment status successfully.",
+                  "data": { "botramOrderId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                botramOrderId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "botramOrderId param is missing."
+                    }
+                Botram Order has Paid:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Botram order status has been paid."
+                    }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Botram order is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /resto/reviews/:
   # /resto/refresh-token/:
 components:
@@ -2499,6 +3040,20 @@ components:
       in: path
       description: Custom Menu Category Id
       required: true
+      schema:
+        type: string
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      description: Order id
+      schema:
+        type: string
+    BotramOrderId:
+      name: botramOrderId
+      in: path
+      required: true
+      description: Botram Order id
       schema:
         type: string
     CustomMenuCompositionId:
@@ -2676,6 +3231,79 @@ components:
       items:
         type: string
       maxItems: 100
+    OrderDetailResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessAPIResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                id:
+                  type: string
+                createdAt:
+                  type: string
+                isGroup:
+                  type: boolean
+                customer:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    name:
+                      type: string
+                status:
+                  type: boolean
+                isPaid:
+                  type: boolean
+                orderedMenu:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    menuId:
+                      type: string
+                    menuName:
+                      type: string
+                    menuPrice:
+                      type: number
+                    quantity:
+                      type: number
+                    totalPrice:
+                      type: number
+                    isDibungkus:
+                      type: boolean
+                    spicyLevel:
+                      type: number
+                      nullable: true
+    OrderSuccessResponse:
+      allOf:
+        - $ref: "#/components/schemas/SuccessAPIResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                accepted:
+                  type: number
+                processed:
+                  type: number
+                done:
+                  type: number
+                cancel:
+                  type: number
+                total:
+                  type: number
+              required:
+                - accepted
+                - processed
+                - done
+                - cancel
+                - total
+          required:
+            - success
+            - message
+            - data
   examples:
     # error response
     AuthenticationError:
@@ -2897,5 +3525,54 @@ components:
               "success": false,
               "message": "Something went wrong. Try again later.",
             }
+    UpdateOrderStatusBadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorAPIResponse"
+          examples:
+            Invalid Status Body Payload:
+              value:
+              {
+                "success": false,
+                "message": "status body payload is invalid."
+              }
+            Invalid Accepted Status:
+              value:
+              {
+                "success": false,
+                "message": "status body payload is invalid. ACCEPTED is allowed if status order is READY_TO_ORDER."
+              }
+            Invalid Processed Status:
+              value:
+              {
+                "success": false,
+                "message": "status body payload is invalid. PROCESSED is allowed if status order is ACCEPTED_BY_RESTO."
+              }
+            Invalid Done Status:
+              value:
+              {
+                "success": false,
+                "message": "status body payload is invalid. DONE is allowed if status order is PROCESSED_BY_RESTO."
+              }
+            Invalid CANCEL Status:
+              value:
+              {
+                "success": false,
+                "message": "status body payload is invalid. CANCEL is allowed if status order is PROCESSED_BY_RESTO."
+              }
+            Menu Stock is running out:
+              value:
+              {
+                "success": false,
+                "message": "Menu stock is running out. Please try again later."
+              }
+            Custom Menu Composition Stock is running out:
+              value:
+              {
+                "success": false,
+                "message": "Custom Menu Composition is run out of stock. Please try again later."
+              }
 # RESTO_ACCESS_TOKEN_COOKIE_NAME=iertu8r54g734r23u4jrwoefuefudf328HYKDLMGSusr
 # CUSTOMER_ACCESS_TOKEN_COOKIE_NAME=45237rh0341wirjfuwaer723UHFYsdgfwer8wehYYg

@@ -2278,6 +2278,191 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
+  /resto/notifications/:
+    get:
+      tags:
+        - Resto
+        - Resto Notification
+      description: API to get all notification
+      security:
+        - RestoAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/LimitPagination"
+        - $ref: "#/components/parameters/PagePagination"
+        - name: read
+          in: query
+          required: false
+          description: Status isRead of notifcation with "0" or "1"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get all restaurant notification
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          notifications:
+                            type: array
+                          pages:
+                            type: number
+                            description: Total pages of displayed data
+                          total:
+                            type: number
+                            description: Total count all data
+                        required:
+                          - notifications
+                          - pages
+                          - total
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/notifications/all:
+    put:
+      tags:
+        - Resto
+        - Resto Notification
+      description: API to update all notification status isRead to be true
+      security:
+        - RestoAccessTokenAuth: []
+      responses:
+        "200":
+          description: Success to update all notifcation status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Updating all notification read status successfully.",
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/notifications/{notificationId}:
+    put:
+      tags:
+        - Resto
+        - Resto Notification
+      description: API to get update specific notification status isRead to be true by id
+      security:
+        - RestoAccessTokenAuth: []
+      responses:
+        "200":
+          description: Succes to update notification status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          notificationId:
+                            type: string
+                        required:
+                          - notificationId
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                {
+                  "success": true,
+                  "message": "Updating notification status successfully.",
+                  "data":
+                    { "notificationId": "550e8400-e29b-41d4-a716-44665544000" },
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "notificationId param is missing.",
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                { "success": false, "message": "Notification is not found." }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /resto/notifications/count:
+    get:
+      tags:
+        - Resto
+        - Resto Notification
+      description: API to get total unred notification
+      security:
+        - RestoAccessTokenAuth: []
+      responses:
+        "200":
+          description: Success to get total unread notifcation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          unreadNotification:
+                            type: number
+                        required:
+                          - unreadNotification
+                    required:
+                      - success
+                      - message
+                      - data
+              example:
+                {
+                  "success": true,
+                  "message": "Success to get the number of unread notification data.",
+                  "data": { "unreadNotification": 5 },
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/RestoVerificationAndMinimumSetupMiddlewareError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  # /resto/orders/:
+  # /resto/reviews/:
+  # /resto/refresh-token/:
 components:
   securitySchemes:
     RestoAccessTokenAuth:

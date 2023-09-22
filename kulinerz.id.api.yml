@@ -3447,7 +3447,7 @@ paths:
           $ref: "#/components/responses/RestoAccessTokenError"
         "500":
           $ref: "#/components/responses/ServerError"
-  
+  # customer route
   /auth/signup:
     post:
       tags:
@@ -4384,6 +4384,238 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
+  /wishlist:
+    get:
+      tags:
+        - Customer
+        - Customer Wishlist
+      description: Get wishlist review
+      security:
+        - CustomerAccessTokenAuth: []
+      responses:
+        "200":
+          description: Get customer wishlist
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            menu:
+                              type: object
+                              properties:
+                                slug:
+                                  type: string
+                                image:
+                                  type: string
+                                name:
+                                  type: string
+                                restaurant:
+                                  type: object
+                                  properties:
+                                    username:
+                                      type: string
+                                    name:
+                                      type: string
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /wishlist/{menuId}:
+    post:
+      tags:
+        - Customer
+        - Customer Wishlist
+      description: Create wishlist review
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - name: menuId
+          in: path
+          required: true
+          description: Menu Id to add to wishlist
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Success to add menu to wishlist
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          wishlistId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Adding menu to wishlist successfully.",
+                  "data": {
+                    "wishlistId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "menuId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+              {
+                "success": false,
+                "message": "Menu is not found."
+              }
+        "500":
+          $ref: "#/components/schemas/ErrorAPIResponse"
+    get:
+      tags:
+        - Customer
+        - Customer Wishlist
+      description: Check menu included to wishlist
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - name: menuId
+          in: path
+          required: true
+          description: Menu Id to add to wishlist
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get status is included to wishlist or not
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      result:
+                        type: boolean
+              example:
+                {
+                  "success": true,
+                  "message": "Checking successfully.",
+                  "result": true,
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "menuId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Customer
+        - Customer Wishlist
+      description: Delete menu from wishlist
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - name: menuId
+          in: path
+          required: true
+          description: Menu Id to add to wishlist
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success delete menu from wishlist
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          wishlistId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Remove menu from wishlist successfully.",
+                  "data": {
+                    "wishlistId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "menuId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Menu is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  # /custom-menu:
+  # /invitations:
+  # /botram:
   # /cart:
   # /my-cart:
   # /botram-cart:

@@ -3813,11 +3813,577 @@ paths:
           $ref: "#/components/responses/CustomerEmailNotVerifiedError"
         "500":
           $ref: "#/components/responses/ServerError"
-  # /restaurant:
-  # /wishlist:
-  # /custom-menu:
-  # /invitations:
-  # /botram:
+  /restaurant/{restaurantUsername}:
+    get:
+      tags:
+        - Customer
+        - Customer Restaurant
+      description: Find restaurant by username
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RestaurantUsername"
+      responses:
+        "200":
+          description: Success to find restaurant
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          username:
+                            type: string
+                          name:
+                            type: string
+                          avatar:
+                            type: string
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Restaurant is not Found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /restaurant/{restaurantUsername}/profile:
+    get:
+      tags:
+        - Customer
+        - Customer Restaurant
+      description: Get Restaurant detail information 
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RestaurantUsername"
+      responses:
+        "200":
+          description: Success to get restaurant detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIReturnUserIdResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          avatar:
+                            type: string
+                          username:
+                            type: string
+                          name:
+                            type: string
+                          rating:
+                            type: object
+                            properties:
+                              mean:
+                                type: number
+                              totalReview:
+                                type: number
+                          isOpenNow:
+                            type: boolean
+                            nullable: true
+                          gallery:
+                            type: string
+                            nullable: true
+                          detail:
+                            type: object
+                            properties:
+                              address:
+                                type: string
+                                nullable: true
+                              contact:
+                                type: string
+                                nullable: true
+                              openingHour:
+                                type: string
+                                nullable: true
+                              closingHour:
+                                type: string
+                                nullable: true
+                              daysOff:
+                                type: array
+                                items:
+                                  type: string
+                          fasilities:
+                            type: array
+                            items:
+                              type: string
+                          locationLink:
+                            type: string
+                            nullable: true
+              example:
+                # engke nya
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Restaurant is not Found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /restaurant/{restaurantUsername}/menus:
+    get:
+      tags:
+        - Customer
+        - Customer Restaurant
+      description: Get Restaurant menu information 
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RestaurantUsername"
+
+        - name: sortBy
+          in: query
+          required: false
+          description: Sorting filter data
+          schema:
+            type: string
+            default: newest
+            enum:
+              - newest
+              - oldest
+              - lowestprice
+              - highestprice
+        - name: etalaseId
+          in: query
+          required: false
+          description: Filter menu by etalase
+          schema:
+            type: string
+        - $ref: "#/components/parameters/LimitPagination"
+        - $ref: "#/components/parameters/PagePagination"
+      responses:
+        "200":
+          description: Success to get restaurant menus
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          menus:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                slug:
+                                  type: string
+                                name:
+                                  type: string
+                                image:
+                                  type: string
+                                price:
+                                  type: number
+                          pages:
+                            type: number
+                          total:
+                            type: number
+              example:
+                # engke
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Limit or Page query is not number:
+                  value:
+                    {
+                      "success": false,
+                      "message": "limit or page query is not number."
+                    }
+                Page Query Invalid:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Input page is bigger than total pages. Please check your page query."
+                    }
+                sortBy Query Invalid:
+                  value:
+                    {
+                      "success": false,
+                      "message": "sortBy query is not valid."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Restaurant Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Restaurant is not Found."
+                    }
+                Etalase Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Etalase is not found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /restaurant/{restaurantUsername}/reviews:
+    get:
+      tags:
+        - Customer
+        - Customer Restaurant
+      description: Get Restaurant review
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RestaurantUsername"
+        - name: sortBy
+          in: query
+          required: false
+          description: Sort filter for review
+          schema:
+            type: string
+            default: newest 
+            enum:
+              - newest
+              - oldest
+              - lowestrating
+              - highestrating
+        - $ref: "#/components/parameters/LimitPagination"
+        - $ref: "#/components/parameters/PagePagination" 
+      responses:
+        "200":
+          description: Sucess to get list restaurant reviews
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userReview:
+                            $ref: "#/components/schemas/ReviewRestaurantDetail"
+                            nullable: true
+                          reviews:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/ReviewRestaurantDetail"
+                          pages:
+                            type: number
+                          total:
+                            type: number
+              example:
+                # engke
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Limit or Page query is not number:
+                  value:
+                    {
+                      "success": false,
+                      "message": "limit or page query is not number."
+                    }
+                sortBy Query Invalid:
+                  value:
+                    {
+                      "success": false,
+                      "message": "sortBy query is not valid."
+                    }
+                rating Query Invalid:
+                  value:
+                    {
+                      "success": false,
+                      "message": "rating query is not  number of 1-5."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Restaurant is not Found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Customer
+        - Customer Restaurant
+      description: Create review
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RestaurantUsername"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateReview"
+      responses:
+        "200":
+          description: Success to crate review
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          reviewId:
+                            type: string
+              example:
+                {
+                  "success": false,
+                  "message": "Creating review successfully.",
+                  "data": {
+                    "reviewId": "Creating review successfully."
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": {
+                    "message": "Deskripsi maksimal memiliki 250 karakter.",
+                    "field": "description"
+                  }
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Restaurant is not Found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /restaurant/{restaurantUsername}/reviews/{reviewId}:
+    put:
+      tags:
+        - Customer
+        - Customer Restaurant
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RestaurantUsername"
+        - name: reviewId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/CreateAndUpdateReview"
+      responses:
+        "200":
+          description: Success to update review
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          reviewId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Updating review successfully.",
+                  "data": {
+                    "reviewId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Validation Input Error:
+                  value:
+                  {
+                    "success": false,
+                    "message": "Validation errors in your request.",
+                    "errors": {
+                      "message": "Deskripsi maksimal memiliki 250 karakter.",
+                      "field": "description"
+                    }
+                  }
+                reviewId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "reviewId param is missing."
+                    }
+                restaurantUsername param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "restaurantUsername param is missing."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                Restaurant Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Restaurant is not Found."
+                    }
+                Review Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Review is not Found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Customer
+        - Customer Restaurant
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/RestaurantUsername"
+        - name: reviewId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to delete review
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          reviewId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Deleting review successfully.",
+                  "data": {
+                    "reviewId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "reviewId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/RestoAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Review is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /cart:
   # /my-cart:
   # /botram-cart:
@@ -3903,6 +4469,12 @@ components:
       required: true
       description: Review Response id
       schema:
+        type: string
+    RestaurantUsername:
+      name: restaurantUsername
+      in: path
+      required: true
+      schema: 
         type: string
     LimitPagination:
       name: limit
@@ -4145,6 +4717,26 @@ components:
             - success
             - message
             - data
+    ReviewRestaurantDetail:
+      type: object  
+      properties:
+        id:
+          type: string
+        createdAt:
+          type: string
+        rating:
+          type: number
+        description:
+          type: string
+        reviewer:
+          type: object
+          properties:
+            username:
+              type: string
+            name:
+              type: string
+            everShoppingHere:
+              type: boolean
   examples:
     # error response
     AuthenticationError:
@@ -4310,6 +4902,26 @@ components:
                 maxLength: 250
           example:
               # engke
+    CreateAndUpdateReview:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              rating:
+                type: string
+                description: Kenapa pake string? biar mudah validation nya bos (kata tim BE)
+                enum:
+                  - "1"
+                  - "2"
+                  - "3"
+                  - "4"
+                  - "5"
+              description:
+                type: string
+                maxLength: 250
+          example:
+            # engke
   responses:
     RestoAccessTokenError:
       description: Access Token Error

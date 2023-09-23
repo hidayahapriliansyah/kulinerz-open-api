@@ -5012,7 +5012,261 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
-  # /invitations:
+  /invitations:
+    get:
+      tags:
+        - Customer
+        - Customer Invitation
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get all invitation botram group
+      responses:
+        "200":
+          description: Success to get all invitation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        properties:
+                          id:
+                            type: string
+                          groupBotram:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              createdAt:
+                                type: string
+                              name:
+                                type: string
+                              status:
+                                $ref: "#/components/schemas/BotramGroupStatus"
+                              restaurant:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  username:
+                                    type: string
+                                  name:
+                                    type: string
+              example:
+                # engke saja
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /invitations/{invitationId}:
+    get:
+      tags:
+        - Customer
+        - Customer Invitation
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get specific invitaion botram group
+      parameters:
+        - $ref: "#/components/parameters/InvitationId"
+      responses:
+        "200":
+          description: Success to get detail invitation botram group
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: Inivitation id
+                          groupBotram:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                description: Botram group id
+                              createdAt:
+                                type: string
+                              name:
+                                type: string
+                              restaurant:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    description: Restaurant id
+                                  name:
+                                    type: string
+                                  username:
+                                    type: string
+                              status:
+                                $ref: "#/components/schemas/BotramGroupStatus"
+                              admin:
+                                type: object
+                                properties:
+                                  username:
+                                    type: string
+                                  name:
+                                    type: string
+                              memberCount:
+                                type: number
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Invitation is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    put:
+      tags:
+        - Customer
+        - Customer Invitation
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Accept invitation botram group
+      parameters:
+        - $ref: "#/components/parameters/InvitationId"
+      responses:
+        "200":
+          description: Success to accepet invitation group
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          invitationId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Accept invitation successfully.",
+                  "data": {
+                    "invitationId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Invitation not found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Invitation is not found."
+                    }
+                Botram group not found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Group Botram is not found."
+                    }
+        "409":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                      "success": false,
+                      "message": "Cannot accept invitation. Customer is ordering in active botram group."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Customer
+        - Customer Invitation
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Reject invitaion botram group
+      parameters:
+        - $ref: "#/components/parameters/InvitationId"
+      responses:
+        "200":
+          description: Success to reject invitation botram group
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          invitationId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Reject invitation successfully.",
+                  "data": {
+                    "invitationId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "invitationId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Invitation is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /botram:
   # /cart:
   # /my-cart:
@@ -5107,6 +5361,13 @@ components:
       description: Review Response id
       schema:
         type: string
+    InvitationId:
+      name: invitationId
+      in: path
+      required: true
+      description: Invitation id
+      schema:
+        type: string
     RestaurantUsername:
       name: restaurantUsername
       in: path
@@ -5130,6 +5391,13 @@ components:
         type: string
         default: "1"
   schemas:
+    BotramGroupStatus:
+      description: Botram group status
+      type: string
+      enum:
+        - ORDERING
+        - ALL_READY_ORDER
+        - DONE
     ErrorAPIResponse:
       type: object
       properties:

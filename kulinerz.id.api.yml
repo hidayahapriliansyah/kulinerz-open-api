@@ -4613,7 +4613,405 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
-  # /custom-menu:
+  /custom-menu:
+    get:
+      tags:
+        - Customer
+        - Customer Custom Menu
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get all custom menu
+      responses:
+        "200":
+          description: Success to get all custom menus
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            createdAt:
+                              type: string
+                            name:
+                              type: string
+                            restaurant:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                name:
+                                  type: string
+                                username:
+                                  type: string
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Customer
+        - Customer Custom Menu
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Create custom menu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurantId:
+                  type: string
+                customMenuCateogryId:
+                  type: string
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 80
+                pickedCustomMenuComposition:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      qty:
+                        type: number
+                        minimum: 1
+                    required:
+                      - id
+                      - qty
+                  minLength: 1
+              required:
+                - restaurantId
+                - customMenuCateogryId
+                - name
+                - pickedCustomMenuComposition
+      responses:
+        "201":
+          description: Success to create custom menu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customMenuId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Creating custom menu successfully.",
+                  "data": {
+                    "customMenuId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": [
+                    {
+                      "message": "Nama maksimal memiliki 80 karakter.",
+                      "field": "name"
+                    },
+                    {
+                      "message": "restaurantId harus diisi.",
+                      "field": "restaurantId"
+                    },
+                  ]
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Custom Menu Category Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Custom Menu Category is not found."
+                    }
+                Custom Menu Composition Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Custom Menu Composition is not found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /custom-menu/{customMenuId}:
+    get:
+      tags:
+        - Customer
+        - Customer Custom Menu
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get Custom Menu detail by id
+      parameters:
+        - $ref: "#/components/parameters/CustomMenuId"
+      responses:
+        "200":
+          description: Success to get custom menu detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          createdAt:
+                            type: string
+                          image:
+                            type: string
+                          restaurant:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              username:
+                                type: string
+                              name:
+                                type: string
+                          customMenuCategory:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              isBungkusAble:
+                                type: boolean
+                          pickedCustomMenuComposition:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                customMenuComposition:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    name:
+                                      type: string
+                                    image:
+                                      type: string
+                                    price:
+                                      type: number
+              example:
+                # engke
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Custom Menu is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    put:
+      tags:
+        - Customer
+        - Customer Custom Menu
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Update Custom Menu detail by id
+      parameters:
+        - $ref: "#/components/parameters/CustomMenuId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 80
+                pickedCustomMenuComposition:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      qty:
+                        type: number
+                        minimum: 1
+                    required:
+                      - name
+                      - qty
+            example:
+              # engke
+      responses:
+        "200":
+          description: Success to update custom menu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customMenuId:
+                            type: string
+              example:
+                {
+                  "success": false,
+                  "message": "Update custom menu successfully."
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Validation Input Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors": [
+                        {
+                          "message": "Nama maksimal memiliki 80 karakter.",
+                          "field": "name"
+                        }
+                      ]
+                    }
+                customMenuId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "customMenuId param is missing."
+                    }
+        "401": 
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403": 
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404": 
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Custom Menu is not found."
+                }
+        "500": 
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Customer
+        - Customer Custom Menu
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Delete Custom Menu by id
+      parameters:
+        - $ref: "#/components/parameters/CustomMenuId"
+      responses:
+        "200":
+          description: Success to delete custom menu
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          customMenuId:
+                            type: string
+              example:
+                {
+                  "success": false,
+                  "message": "Delete custom menu successfully.",
+                  "data": {
+                    "customMenuId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "customMenuId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Custom Menu is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /invitations:
   # /botram:
   # /cart:
@@ -4693,6 +5091,13 @@ components:
       in: path
       required: true
       description: Review id
+      schema:
+        type: string
+    CustomMenuId:
+      name: customMenuId
+      in: path
+      required: true
+      description: Custom menu id
       schema:
         type: string
     ReviewResponseId:

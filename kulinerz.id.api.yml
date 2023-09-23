@@ -5084,42 +5084,7 @@ paths:
                   - type: object
                     properties:
                       data:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            description: Inivitation id
-                          groupBotram:
-                            type: object
-                            properties:
-                              id:
-                                type: string
-                                description: Botram group id
-                              createdAt:
-                                type: string
-                              name:
-                                type: string
-                              restaurant:
-                                type: object
-                                properties:
-                                  id:
-                                    type: string
-                                    description: Restaurant id
-                                  name:
-                                    type: string
-                                  username:
-                                    type: string
-                              status:
-                                $ref: "#/components/schemas/BotramGroupStatus"
-                              admin:
-                                type: object
-                                properties:
-                                  username:
-                                    type: string
-                                  name:
-                                    type: string
-                              memberCount:
-                                type: number
+                        $ref: "#/components/schemas/BotramGroupHighlightDetail"
               example:
                 # engke
         "401":
@@ -5174,7 +5139,21 @@ paths:
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
-          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                Email Not Verified:
+                  value:
+                    $ref: "#/components/examples/CustomerEmailIsNotVerifiedError"
+                Customer is Ordering at Other Botram Group:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Cannot create botram group. Customer is ordering in active botram group."
+                    }
         "404":
           description: Not Found
           content:
@@ -5194,17 +5173,6 @@ paths:
                       "success": false,
                       "message": "Group Botram is not found."
                     }
-        "409":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorAPIResponse"
-              example:
-                {
-                      "success": false,
-                      "message": "Cannot accept invitation. Customer is ordering in active botram group."
-                }
         "500":
           $ref: "#/components/responses/ServerError"
     delete:
@@ -5267,7 +5235,711 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
-  # /botram:
+  /botram:
+    get:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get all customer botram group
+      responses:
+        "200":
+          description: Success to get all customer botram group
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            createdAt:
+                              type: string
+                            name:
+                              type: string
+                            restaurant:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                username:
+                                  type: string
+                                name:
+                                  type: string
+                            status:
+                              $ref: "#/components/schemas/BotramGroupStatus"
+                            memberStatus:
+                              type: string
+                              enum:
+                                - admin
+                                - member
+              example:
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Create botram group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurantId:
+                  type: string
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 30
+                members:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                    required:
+                      - id
+                  maxItems: 50
+              required:
+                - restaurantId
+                - name
+                - members
+      responses:
+        "201":
+          description: Success to create botram group
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          botramGroupId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Create botram group successfully.",
+                  "data": {
+                    "botramGroupId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400": 
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": [
+                    {
+                      "message": "Anggota members maksimal 50 orang.",
+                      "field": "members"
+                    }
+                  ]
+                }
+        "401": 
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                Email Not Verified:
+                  value:
+                    $ref: "#/components/examples/CustomerEmailIsNotVerifiedError"
+                Customer is Ordering at Other Botram Group:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Cannot create botram group. Customer is ordering in active botram group."
+                    }
+        "404": 
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Restaurant Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Restaurant is not found."
+                    }
+                Customer Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Customer is not found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram/{customerUsername}/customer:
+    get:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Find customer to be added to botram group
+      parameters:
+        - name: customerUsername
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get customer
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                      username:
+                        type: string
+                      name:
+                        type: string
+                      avatar:
+                        type: string
+              example:
+                # engke saja yach adi
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Customer is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram/{botramId}:
+    get:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get specific customer botram group detail
+      parameters:
+        - $ref: "#/components/parameters/BotramId"
+      responses:
+        "200":
+          description: Success to get customer botram group detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/BotramGroupHighlightDetail"
+                          - type: object
+                            properties:
+                              groupBotram:
+                                type: object
+                                properties:
+                                  status:
+                                    type: string
+                                    enum:
+                                      - REVIEW
+                    example:
+                      # engke heula
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Email is Not Verified:
+                  value:
+                    $ref: "#/components/examples/CustomerEmailIsNotVerifiedError"
+                Customer is Not Member:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Customer is not part of member. Access to this resource is forbidden."
+                    }
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Botram group is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Join open membership botram group
+      parameters:
+        - $ref: "#/components/parameters/BotramId"
+      responses:
+        "200":
+          description: Success to join botram group
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          memberId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Join botram group successfully.",
+                  "data": {
+                    "memberId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "botramId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                Email Not Verified:
+                  value:
+                    $ref: "#/components/examples/CustomerEmailIsNotVerifiedError"
+                Customer is Ordering at Other Botram Group:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Cannot create botram group. Customer is ordering in active botram group."
+                    }
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Botram group is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    put:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Exit from botram group
+      parameters:
+        - $ref: "#/components/parameters/BotramId"
+      responses:
+        "200":
+          description: Success to exit from botram group.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          memberId:
+                            type: string
+                example:
+                  {
+                    "success": false,
+                    "message": "Exit botram group successfully.",
+                    "data": {
+                      "memberId": "550e8400-e29b-41d4-a716-44665544000"
+                    }
+                  }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                botramId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "botramId param is missing."
+                    }
+                Botram Group Order Already Processed:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Invalid request. Botram group order already processed. Member can not exit."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailAndBotramMemberMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Botram group is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram/{botramId}/members:
+    get:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get member and member order of botram group
+      parameters:
+        - $ref: "#/components/parameters/BotramId"
+      responses:
+        "200":
+          description: Success to get member and member order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            description: Botram group id
+                            type: string
+                          myOrder:
+                            nullable: true
+                            $ref: "#/components/schemas/BotramMemberOrder"
+                          members:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/BotramMemberOrder"
+              example:
+                # engke sabar ...
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "botramId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailAndBotramMemberMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Botram group is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram/{botramId}/members/{memberId}/kick:
+    put:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Kick member botram by admin
+      parameters:
+        - $ref: "#/components/parameters/BotramId"
+        - $ref: "#/components/parameters/MemberBotramId"
+      responses:
+        "200":
+          description: Success to kick member
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          memberId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Expel member successfully.",
+                  "data": {
+                    "memberId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                botramId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "botramId param is missing."
+                    }
+                memberId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "memberId param is missing."
+                    }
+                Botram Group is Not Ordering:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Botram group is not ordering. Member can not be expelled."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailAndBotramAdminMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Botram Group Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Botram group is not found."
+                    }
+                Member Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Member is not found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram/{botramId}/members/{memberId}/paid:
+    put:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Kick member botram by admin
+      parameters:
+        - $ref: "#/components/parameters/BotramId"
+        - $ref: "#/components/parameters/MemberBotramId"
+      responses:
+        "200":
+          description: Success to update member paid status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          memberId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Update member payment status successfully.",
+                  "data": {
+                    "memberId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                botramId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "botramId param is missing."
+                    }
+                memberId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "memberId param is missing."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailAndBotramAdminMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Member Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Member is not found."
+                    }
+                Member Order Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Member order is not found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram/{botramId}/orders:
+    put:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Update Group Botram Status to "ALL_READY_ORDER"
+      parameters:
+        - $ref: "#/components/parameters/BotramId"
+      responses:
+        "200":
+          description: Success to update botram status to all ready order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          botramGroupId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Update botram group status to all ready order successfully."
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "botramId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailAndBotramAdminMiddlewareError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                [
+                  "success": false,
+                  "message": "Botram group is not found."
+                ]
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /cart:
   # /my-cart:
   # /botram-cart:
@@ -5368,6 +6040,18 @@ components:
       description: Invitation id
       schema:
         type: string
+    BotramId:
+      name: botramId
+      in: path
+      required: true
+      schema:
+        type: string
+    MemberBotramId:
+      name: memberId
+      in: path
+      required: true
+      schema:
+        type: string
     RestaurantUsername:
       name: restaurantUsername
       in: path
@@ -5391,6 +6075,94 @@ components:
         type: string
         default: "1"
   schemas:
+    BotramMemberOrder:
+      type: object
+      properties:
+        memberDetail:
+          type: object
+          properties:
+            id:
+              type: string
+            status:
+              type: string
+              enum:
+                - NOT_JOIN_YET
+                - ORDERING
+                - ORDER_READY
+                - EXIT
+                - EXPELLED
+            name:
+              type: string
+            username:
+              type: string
+        order:
+          type: object
+          properties:
+            id:
+              description: Order id
+              type: string
+            total:
+              type: number
+            isPaid:
+              type: boolean
+            orderedMenus:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    description: Ordered Menu id
+                    type: string
+                  menu:
+                    type: object
+                    properties:
+                      id: 
+                        description: Menu id
+                        type: string
+                      name:
+                        type: string
+                      price:
+                        type: number
+                  quantity:
+                    description: Ordered Menu quantity
+                    type: number
+                  totalPrice:
+                    description: menu price time quantity
+                    type: number
+                  isDibungkus:
+                    type: boolean
+                  spicyLevel:
+                    type: boolean
+                    nullable: true
+            orderedCustomMenus:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    description: Ordered Menu id
+                    type: string
+                  customMenu:
+                    type: object
+                    properties:
+                      id: 
+                        description: Custom menu id
+                        type: string
+                      name:
+                        type: string
+                      price:
+                        type: number
+                  quantity:
+                    description: Ordered Custom menu quantity
+                    type: number
+                  totalPrice:
+                    description: Custom menu price time quantity
+                    type: number
+                  isDibungkus:
+                    type: boolean
+                  spicyLevel:
+                    type: boolean
+                    nullable: true
     BotramGroupStatus:
       description: Botram group status
       type: string
@@ -5398,6 +6170,43 @@ components:
         - ORDERING
         - ALL_READY_ORDER
         - DONE
+    BotramGroupHighlightDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Inivitation id
+        groupBotram:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Botram group id
+            createdAt:
+              type: string
+            name:
+              type: string
+            restaurant:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Restaurant id
+                name:
+                  type: string
+                username:
+                  type: string
+            status:
+              $ref: "#/components/schemas/BotramGroupStatus"
+            admin:
+              type: object
+              properties:
+                username:
+                  type: string
+                name:
+                  type: string
+            memberCount:
+              type: number
     ErrorAPIResponse:
       type: object
       properties:
@@ -5676,6 +6485,12 @@ components:
           "success": false,
           "message": "Your account has not completed the minimum profile setup. Please complete your profile before using the application features.",
         }
+    CustomerEmailIsNotVerifiedError:
+      value:
+        {
+          "success": true,
+          "message": "Access denied. Please verify your email.",
+        }
     # success response
     SuccessSigninResponse:
       value:
@@ -5936,10 +6751,39 @@ components:
           schema:
             $ref: "#/components/schemas/ErrorAPIResponse"
           example:
-            {
-              "success": false,
-              "message": "Access denied. Please verify your email."
-            }
+            $ref: "#/components/examples/CustomerEmailIsNotVerifiedError"
+    CustomerEmailAndBotramMemberMiddlewareError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorAPIResponse"
+          examples:
+            Email is Not Verified:
+              value:
+                $ref: "#/components/examples/CustomerEmailIsNotVerifiedError"
+            Customer is Not Member:
+              value:
+                {
+                  "success": false,
+                  "message": "Customer is not part of member. Access to this resource is forbidden."
+                }
+    CustomerEmailAndBotramAdminMiddlewareError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorAPIResponse"
+          examples:
+            Email is Not Verified:
+              value:
+                $ref: "#/components/examples/CustomerEmailIsNotVerifiedError"
+            Not Admin:
+              value:
+                {
+                  "success": false,
+                  "message": "Only for admin of botram group. Access to this resource is forbidden."
+                }
     ServerError:
       description: Error response if some unknown error happen to the server
       content:

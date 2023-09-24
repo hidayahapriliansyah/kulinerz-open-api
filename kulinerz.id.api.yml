@@ -6015,6 +6015,12 @@ paths:
                         $ref: "#/components/schemas/MyCartResponse"
               example:
                 # engke nyaa
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /my-cart/item:
     post:
       tags:
@@ -6164,58 +6170,7 @@ paths:
                               name:
                                 type: string
                           items:
-                            type: object
-                            properties:
-                              menuCarts:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    id:
-                                      description: MenuCart Id
-                                      type: string
-                                    menu:
-                                      type: object
-                                      properties:
-                                        id:
-                                          description: Menu Id
-                                          type: string
-                                        name:
-                                          type: string
-                                        price:
-                                          type: number
-                                    isDibungkus:
-                                      type: boolean
-                                    quantity:
-                                      type: number
-                                    spicyLevel:
-                                      nullable: true
-                                      type: number
-                              customMenuCarts:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    id:
-                                      description: Custom Menu Cart Id
-                                      type: string
-                                    menu:
-                                      type: object
-                                      properties:
-                                        id:
-                                          description: Custom Menu Id
-                                          type: string
-                                        name:
-                                          type: string
-                                        price:
-                                          type: number
-                                    isDibungkus:
-                                      type: boolean
-                                    quantity:
-                                      type: number
-                                    spicyLevel:
-                                      nullable: true
-                                      type: number
+                            $ref: "#/components/schemas/CartItemList"
               example:
                 # engke
         "400":
@@ -6491,7 +6446,497 @@ paths:
           $ref: "#/components/responses/CustomerEmailNotVerifiedError"
         "500":
           $ref: "#/components/responses/ServerError"
-  # /botram-cart:
+  /botram-cart:
+    get:
+      tags:
+        - Customer
+        - Customer Botram Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get Botram Cart
+      responses:
+        "200":
+          description: Success to get botram cart
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        nullable: true
+                        type: object
+                        properties:
+                          botramGroup:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              restaurant:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  name:
+                                    type: string
+                                  username:
+                                    type: string
+                                  image:
+                                    type: string
+                          totalCartItem:
+                            type: number
+              example:
+                # engke nyaa
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram-cart/item:
+    post:
+      tags:
+        - Customer
+        - Customer Botram Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Add Menu to Botram Cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                botramGroupId:
+                  type: string
+                menu:
+                  type: object
+                  properties:
+                    isCustomMenu:
+                      type: boolean
+                    id:
+                      type: string
+                  required:
+                    - isCustomMenu
+                    - id
+                isDibungkus:
+                  type: boolean
+                quantity:
+                  type: number
+                spicyLevel:
+                  type: number
+                  minimum: 0
+              required:
+                - botramGroupId
+                - menu
+                - isDibungkus
+                - quantity
+            example:
+              # engke la
+      responses:
+        "201":
+          description: Success to add menu to Botram Cart
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          cartItemId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Add item to botram cart successfully.",
+                  "data": {
+                    "cartItemId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Validation Input Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors": [
+                        {
+                          "message": "isDibungkus harus diisi.",
+                          "field": "isDibungkus"
+                        }
+                      ]
+                    }
+                Item Runs Out of Stock:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Item is run out of stock. Please try again later.",
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Botram Group Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Botram group is not found."
+                    }
+                Menu Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Menu is not found."
+                    }
+                Custom Menu Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Custom Menu is not found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram-cart/detail/{botramGroupId}:
+    get:
+      tags:
+          - Customer
+          - Customer Botram Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get My Cart Item by Botram Group Id
+      parameters:
+        - name: botramGroupId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get item from Botram Cart
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          botramGroup:
+                            type: object
+                            properties:
+                              id:
+                                description: Botram group id
+                                type: string
+                              name:
+                                description: Botram group name
+                                type: string
+                              restaurant:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  username:
+                                    type: string
+                                  name:
+                                    type: string
+                          items:
+                            $ref: "#/components/schemas/CartItemList"
+              example:
+                # engke
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "botramGroupId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Botram Group Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Botram group is not found."
+                    }
+                No Cart Item Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "No cart item found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram-cart/item/{botramCartId}/quantity:
+    put:
+      tags:
+          - Customer
+          - Customer Botram Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Update qty of botram cart item
+      parameters:
+        - $ref: "#/components/parameters/BotramCartId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+              required:
+                - quantity
+            example:
+              {
+                "quantity": 9
+              }
+      responses:
+        "200":
+          description: Success to update qty of Botram Cart Item
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          cartItemId:
+                            type: string
+                          isAvailableToAddMore:
+                            type: boolean
+              example:
+                {
+                  "success": true,
+                  "message": "Updating quantity of botram cart item successfully.",
+                  "data": {
+                    "botramCartId": "550e8400-e29b-41d4-a716-44665544000",
+                    "isAvailableToAddMore": false,
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                myCartId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "botramCartId param is missing."
+                    }
+                Quantity property is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "quantity body payload is missing."
+                    }
+                Quantity property is not number:
+                  value:
+                    {
+                      "success": false,
+                      "message": "quantity body payload is not number."
+                    }
+                Item runs out of stock:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Item is run out of stock. Please try again later."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailAndMembershipBotramNotFound"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Menu cart item is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram-cart/item/{botramCartId}:
+    delete:
+      tags:
+        - Customer
+        - Customer Botram Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Delete botram cart item
+      parameters:
+        - $ref: "#/components/parameters/BotramCartId"
+      responses:
+        "200":
+          description: Success to delete botram cart item
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          botramCartId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Delete item from botram cart successfully.",
+                  "data": {
+                    "botramCartId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "botramCartId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailAndMembershipBotramNotFound"
+        "404":
+          description: Not Found
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Menu cart item is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /botram-cart/bulk:
+    delete:
+      tags:
+        - Customer
+        - Customer Botram Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Delete bulk botram cart item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itemIds:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      isCustomMenu:
+                        type: boolean
+                      id:
+                        description: Cart item id
+                        type: string
+                    required:
+                      - isCustomMenu
+                      - id
+                  minItems: 1
+              required:
+                - itemIds
+            example:
+              # engke nyaaa :)
+      responses:
+        "200":
+          description: Success to delete bulk item of cart
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          deletedItemCount:
+                            type: number
+              example:
+                {
+                  "success": false,
+                  "message": "Removing many item from botram cart successfully.",
+                  "data": {
+                    "deletedItemCount": 2
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": [
+                    {
+                      "message": "itemIds setidaknya memiliki 1 item",
+                      "field": "itemIds"
+                    }
+                  ]
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailAndMembershipBotramNotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /orders:
   # /purchase:
   # /account:
@@ -6603,6 +7048,12 @@ components:
         type: string
     MyCartId:
       name: myCartId
+      in: path
+      required: true
+      schema:
+        type: string
+    BotramCartId:
+      name: botramCartId
       in: path
       required: true
       schema:
@@ -6762,6 +7213,59 @@ components:
                   type: string
             memberCount:
               type: number
+    CartItemList:
+      type: object
+      properties:
+        menuCarts:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: MenuCart Id
+                type: string
+              menu:
+                type: object
+                properties:
+                  id:
+                    description: Menu Id
+                    type: string
+                  name:
+                    type: string
+                  price:
+                    type: number
+              isDibungkus:
+                type: boolean
+              quantity:
+                type: number
+              spicyLevel:
+                nullable: true
+                type: number
+        customMenuCarts:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: Custom Menu Cart Id
+                type: string
+              menu:
+                type: object
+                properties:
+                  id:
+                    description: Custom Menu Id
+                    type: string
+                  name:
+                    type: string
+                  price:
+                    type: number
+              isDibungkus:
+                type: boolean
+              quantity:
+                type: number
+              spicyLevel:
+                nullable: true
+                type: number
     MyCartResponse:
       type: object
       properties:
@@ -7330,6 +7834,21 @@ components:
             $ref: "#/components/schemas/ErrorAPIResponse"
           example:
             $ref: "#/components/examples/CustomerEmailIsNotVerifiedError"
+    CustomerEmailAndMembershipBotramNotFound:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorAPIResponse"
+          examples:
+            Email Not Verified:
+              $ref: "#/components/examples/CustomerEmailIsNotVerifiedError"
+            Membership Not Found:
+              value:
+                {
+                  "success": false,
+                  "message": "Membership is not found."
+                }
     CustomerEmailAndBotramMemberMiddlewareError:
       description: Forbidden
       content:

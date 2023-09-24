@@ -5940,8 +5940,557 @@ paths:
                 ]
         "500":
           $ref: "#/components/responses/ServerError"
-  # /cart:
-  # /my-cart:
+  /cart:
+    get: 
+      tags:
+        - Customer
+        - Customer Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get overview cart grouped
+      responses:
+        "200":
+          description: Success to get overview cart grouped
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          mycart:
+                            $ref: "#/components/schemas/MyCartResponse"
+                          botramCart:
+                            nullable: true
+                            type: object
+                            properties:
+                              botramGroup:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  restaurant:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                      username:
+                                        type: string
+                                      name:
+                                        type: string
+                                      image:
+                                        type: string
+                              totalCartItem:
+                                type: number
+              example:
+                # engke saja
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /my-cart:
+    get:
+      tags:
+        - Customer
+        - Customer My Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get My Cart
+      responses:
+        "200":
+          description: Success to get my cart
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/MyCartResponse"
+              example:
+                # engke nyaa
+  /my-cart/item:
+    post:
+      tags:
+        - Customer
+        - Customer My Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Add Menu to My Cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menu:
+                  type: object
+                  properties:
+                    isCustomMenu:
+                      type: boolean
+                    id:
+                      type: string
+                  required:
+                    - isCustomMenu
+                    - id
+                isDibungkus:
+                  type: boolean
+                quantity:
+                  type: number
+                spicyLevel:
+                  type: number
+                  minimum: 0
+              required:
+                - menu
+                - isDibungkus
+                - quantity
+            example:
+              # engke la
+      responses:
+        "201":
+          description: Success to add men to My Cart
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          cartItemId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Add item to cart successfully.",
+                  "data": {
+                    "cartItemId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Validation Input Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors": [
+                        {
+                          "message": "isDibungkus harus diisi.",
+                          "field": "isDibungkus"
+                        }
+                      ]
+                    }
+                Item Runs Out of Stock:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Item is run out of stock. Please try again later.",
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Menu Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Menu is not found."
+                    }
+                Custom Menu Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Custom Menu is not found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /my-cart/detail/{restaurantId}:
+    get:
+      tags:
+          - Customer
+          - Customer My Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get My Cart Item by Restaurant Id
+      parameters:
+        - name: restaurantId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get item from My Cart
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          restaurant:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              username:
+                                type: string
+                              name:
+                                type: string
+                          items:
+                            type: object
+                            properties:
+                              menuCarts:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      description: MenuCart Id
+                                      type: string
+                                    menu:
+                                      type: object
+                                      properties:
+                                        id:
+                                          description: Menu Id
+                                          type: string
+                                        name:
+                                          type: string
+                                        price:
+                                          type: number
+                                    isDibungkus:
+                                      type: boolean
+                                    quantity:
+                                      type: number
+                                    spicyLevel:
+                                      nullable: true
+                                      type: number
+                              customMenuCarts:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      description: Custom Menu Cart Id
+                                      type: string
+                                    menu:
+                                      type: object
+                                      properties:
+                                        id:
+                                          description: Custom Menu Id
+                                          type: string
+                                        name:
+                                          type: string
+                                        price:
+                                          type: number
+                                    isDibungkus:
+                                      type: boolean
+                                    quantity:
+                                      type: number
+                                    spicyLevel:
+                                      nullable: true
+                                      type: number
+              example:
+                # engke
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "restaurantId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Restaurant Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Restaurant is not found."
+                    }
+                No Cart Item Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "No cart item found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /my-cart/item/{myCartId}/quantity:
+    put:
+      tags:
+          - Customer
+          - Customer My Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Update qty of my cart item
+      parameters:
+        - $ref: "#/components/parameters/MyCartId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+              required:
+                - quantity
+            example:
+              {
+                "quantity": 9
+              }
+      responses:
+        "200":
+          description: Success to update qty from My Cart Item
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          cartItemId:
+                            type: string
+                          isAvailableToAddMore:
+                            type: boolean
+              example:
+                {
+                  "success": true,
+                  "message": "Update qty of my cart item successfully.",
+                  "data": {
+                    "cartItemId": "550e8400-e29b-41d4-a716-44665544000",
+                    "isAvailableToAddMore": true,
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                myCartId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "myCartId param is missing."
+                    }
+                Quantity property is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "quantity body payload is missing."
+                    }
+                Quantity property is not number:
+                  value:
+                    {
+                      "success": false,
+                      "message": "quantity body payload is not number."
+                    }
+                Item runs out of stock:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Item is run out of stock. Please try again later."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Menu cart item is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /my-cart/item/{myCartId}/:
+    delete:
+      tags:
+        - Customer
+        - Customer My Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Delete my cart item
+      parameters:
+        - $ref: "#/components/parameters/MyCartId"
+      responses:
+        "200":
+          description: Success to delete my cart item
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          cartItemId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Delete item from cart successfully.",
+                  "data": {
+                    "cartItemId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "myCartId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Menu cart item is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /my-cart/bulk:
+    delete:
+      tags:
+        - Customer
+        - Customer My Cart
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Delete bulk my cart item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itemIds:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      isCustomMenu:
+                        type: boolean
+                      id:
+                        description: Cart item id
+                        type: string
+                    required:
+                      - isCustomMenu
+                      - id
+                  minItems: 1
+              required:
+                - itemIds
+            example:
+              # engke nyaaa :)
+      responses:
+        "200":
+          description: Success to delete bulk item of cart
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          deletedItemCount:
+                            type: number
+              example:
+                {
+                  "success": false,
+                  "message": "Removing many item from my cart successfully.",
+                  "data": {
+                    "deletedItemCount": 5
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": [
+                    {
+                      "message": "itemIds setidaknya memiliki 1 item",
+                      "field": "itemIds"
+                    }
+                  ]
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /botram-cart:
   # /orders:
   # /purchase:
@@ -6048,6 +6597,12 @@ components:
         type: string
     MemberBotramId:
       name: memberId
+      in: path
+      required: true
+      schema:
+        type: string
+    MyCartId:
+      name: myCartId
       in: path
       required: true
       schema:
@@ -6207,6 +6762,29 @@ components:
                   type: string
             memberCount:
               type: number
+    MyCartResponse:
+      type: object
+      properties:
+        restaurantCount:
+          type: number
+        cart:
+          type: array
+          items:
+            type: object
+            properties:
+              restaurant:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  username:
+                    type: string
+                  name:
+                    type: string
+                  image:
+                    type: string
+              totalItem:
+                type: number
     ErrorAPIResponse:
       type: object
       properties:

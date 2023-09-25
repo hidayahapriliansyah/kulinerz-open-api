@@ -998,10 +998,30 @@ paths:
                   "success": true,
                   "message": "Success sending reset password request to system",
                 }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": [
+                    {
+                      "message": "format email tidak valid.",
+                      "field": "email"
+                    }
+                  ]
+                }
         "500":
           $ref: "#/components/responses/ServerError"
   /resto/account/reset/{uniqueString}:
     get:
+      tags:
+        - Resto
+        - Resto Account
       description: API to update check reset password reset request
       parameters:
         - $ref: "#/components/parameters/UniqueString"
@@ -1050,6 +1070,9 @@ paths:
           $ref: "#/components/responses/ServerError"
   /resto/account/reset/confirmation:
     post:
+      tags:
+        - Resto
+        - Resto Account
       description: Create new password via reset password request
       requestBody:
         content:
@@ -7347,7 +7370,272 @@ paths:
           $ref: "#/components/responses/CustomerEmailNotVerifiedError"
         "500":
           $ref: "#/components/responses/ServerError"
-  # /account:
+  /account/verification:
+    post:
+      tags:
+        - Customer
+        - Customer Account
+      description: API to make customer re email verification request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: "#/components/schemas/Email"
+            example: { "email": "customer@gmail.com" }
+      responses:
+        "200":
+          description: Success to send email verification request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Success sending email verification request to system.",
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Validation errors in your request.",
+                  "errors":
+                    [{ "message": "email tidak valid", "field": "email" }],
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /account/verification/{uniqueString}:
+    get:
+      tags:
+        - Customer
+        - Customer Account
+      description: API to verify email customer account 
+      parameters:
+        - $ref: "#/components/parameters/UniqueString"
+      responses:
+        "200":
+          description: Success to verify email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Email verification is valid. This account is now verified.",
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "uniqueString param is missing.",
+                }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Verification Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Verification request is not found.",
+                    }
+                Customer Not Found:
+                  value:
+                    { "success": false, "message": "Customer is not found." }
+        "409":
+          description: Email already verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Email address already verified. You have already verified your email address.",
+                }
+        "498":
+          description: Request Id (uniqueString) is expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Request Id is expired. Please make a new verification request.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /account/reset/request:
+    post:
+      tags:
+        - Customer
+        - Customer Account
+      description: API for sending reset password request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: "#/components/schemas/Email"
+            example: { "email": "restorancontoh@gmail.com" }
+      responses:
+        "200":
+          description: Success to send reset password request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Success sending reset password request to system",
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Validation errors in your request.",
+                  "errors": [
+                    {
+                      "message": "format email tidak valid.",
+                      "field": "email"
+                    }
+                  ]
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /account/reset/{uniqueString}:
+    get:
+      tags:
+        - Customer
+        - Customer Account
+      description: API to update check reset password reset request
+      parameters:
+        - $ref: "#/components/parameters/UniqueString"
+      responses:
+        "200":
+          description: Success to verify request reset password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "Request password is valid. Please continue to create the new password.",
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "uniqueString param is missing.",
+                }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": false, "message": "Resest Password Request is not found." }
+        "498":
+          description: Request Id (uniqueString) is expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Resest Password Request is expired. Please make a new reset password request.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /account/reset/confirmation:
+    post:
+      tags:
+        - Customer
+        - Customer Account
+      description: Create new password via reset password request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  $ref: "#/components/schemas/Password"
+                requestId:
+                  type: string
+              required:
+                - password
+                - requestId
+            example:
+              {
+                "password": "newpassword123!@#",
+                "requestId": "550e8400-e29b-41d4-a716-44665544000",
+              }
+      responses:
+        "200":
+          description: Success to create new password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessAPIResponse"
+              example:
+                {
+                  "success": true,
+                  "message": "New password saved successfully. Please continue to sign in.",
+                }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example: { "success": false, "message": "Reset Password Request is not found." }
+        "498":
+          description: Request Id (uniqueString) is expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Resest Password Request is expired. Please make a new reset password request.",
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /notifications:
   # /refresh-token:
 components:

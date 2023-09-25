@@ -5883,6 +5883,110 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
   /botram/{botramId}/orders:
+    post:
+      tags:
+        - Customer
+        - Customer Botram
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Create botram member order
+      parameters:
+        - $ref: "#/components/parameters/BotramId"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderBodyPayload"
+              required:
+                - customerNote
+                - orderedItemList
+      responses:
+        "201":
+          description: Success to create botram group member order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          botramMemberOrderId:
+                            type: string
+              example:
+                {
+                  "success": false,
+                  "message": "Create member order successfully.",
+                  "data": {
+                    "botramMemberOrderId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                Member Already has Order:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Member botram sudah memiliki pesanan."
+                    }
+                Validation Input Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors": [
+                        {
+                          "message": "customerNote maksimal memiliki 100 karakter.",
+                          "field": "customerNote"
+                        }
+                      ]
+                    }
+                botramId param is missing:
+                  value:
+                    {
+                      "success": false,
+                      "message": "botramId param is missing."
+                    }
+                Item Runs Out of Stock:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Item is run out of stock. Please try again later."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailAndMembershipBotramNotFound"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Menu Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Menu is not found."
+                    }
+                Custom Menu Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Custom menu is not found."
+                    }
+        "500":
+          $ref: "#/components/responses/CustomerAccessTokenError"
     put:
       tags:
         - Customer
@@ -6937,7 +7041,250 @@ paths:
           $ref: "#/components/responses/CustomerEmailAndMembershipBotramNotFound"
         "500":
           $ref: "#/components/responses/ServerError"
-  # /orders:
+  /orders:
+    post:
+      tags:
+        - Customer
+        - Customer Order
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Create order
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/CreateOrderBodyPayload"
+                - type: object
+                  properties:
+                    restaurantId:
+                      type: string
+              required:
+                - restaurantId
+                - customerNote
+                - orderedItemList     
+            example:
+              # engke nyaa
+      responses:
+        "201":
+          description: Success to create order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          orderId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Creating order successfully.",
+                  "data": {
+                    "orderId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ValidationErrorAPIResponse"
+                  - $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Validation Input Error:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Validation errors in your request.",
+                      "errors": [
+                        {
+                          "message": "customerNote maksimal memiliki 100 karakter.",
+                          "field": "customerNote"
+                        }
+                      ]
+                    }
+                Item Runs Out of Stock:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Item is run out of stock. Please try again later."
+                    }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              examples:
+                Restaurant Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Restaurant is not found."
+                    }
+                Menu Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Menu is not found."
+                    }
+                Custom Menu Not Found:
+                  value:
+                    {
+                      "success": false,
+                      "message": "Custom menu is not found."
+                    }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    get:
+      tags:
+        - Customer
+        - Customer Order
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get order list (not processed)
+      responses:
+        "200":
+          description: Success to get order list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/OrderListItemNotBotramResponse"
+                    - allOf:
+                      - $ref: "#/components/schemas/OrderListItemNotBotramResponse"
+                      - type: object
+                        properties:
+                          botramGroup:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+              example:
+                # engke nyaaa :)
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  /orders/{orderId}:
+    get:
+      tags:
+        - Customer
+        - Customer Order
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      description: Get order detail
+      responses:
+        "200":
+          description: Success to get detail order by id
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        oneOf:
+                          - $ref: "#/components/schemas/OrderDetailItemNotBotramResponse"
+                          - $ref: "#/components/schemas/OrderDetailItemBotramResponse"
+              example:
+                # engke nya ...
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Order is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      tags:
+        - Customer
+        - Customer Order
+      security:
+        - CustomerAccessTokenAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      description: Delete unprocessed order
+      responses:
+        "200":
+          description: Success to delete unprocessed order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          orderId:
+                            type: string
+              example:
+                {
+                  "success": true,
+                  "message": "Removing order successfully.",
+                  "data": {
+                    "orderId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "orderId param is missing."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "Order is not found."
+                }
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /purchase:
   # /account:
   # /notifications:
@@ -7533,6 +7880,188 @@ components:
               type: string
             everShoppingHere:
               type: boolean
+    CreateOrderBodyPayload:
+      type: object
+      properties:
+        customerNote:
+          type: string
+          maxLength: 100
+        orderedItemList:
+          type: object
+          properties:
+            menu:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  isDibungkus:
+                    type: boolean
+                  quantity:
+                    type: number
+                    minimum: 1
+                  spicyLevel:
+                    type: number
+                required:
+                  - id
+                  - isDibungkus
+                  - quantity
+            customMenu:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  isDibungkus:
+                    type: boolean
+                  quantity:
+                    type: number
+                    minimum: 1
+                  spicyLevel:
+                    type: number
+                required:
+                  - id
+                  - isDibungkus
+                  - quantity
+          required:
+            - menu
+            - customMenu
+    OrderListItemNotBotramResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        createdAt:
+          type: string
+        isGroup:
+          type: boolean
+        restaurant:
+          type: object
+          properties:
+            id:
+              type: string
+            username:
+              type: string
+            name:
+              type: string
+        total:
+          type: number
+        isPaid:
+          type: boolean
+        status:
+          type: string
+          enum:
+            - READY_TO_ORDER
+            - ACCEPTED_BY_RESTO
+            - PROCESSED_BY_RESTO
+            - DONE_BY_RESTO
+            - CANCEL_BY_RESTO
+        queueNumber:
+          nullable: true
+          type: number
+    OrderDetailItemNotBotramResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        createdAt:
+          type: string
+        isGroup:
+          type: string
+        restaurant:
+          type: object
+          properties:
+            id:
+              type: string
+            username:
+              type: string
+            name:
+              type: string
+        total:
+          type: number
+        status:
+          type: string
+          enum:
+            - READY_TO_ORDER
+            - ACCEPTED_BY_RESTO
+            - PROCESSED_BY_RESTO
+            - DONE_BY_RESTO
+            - ACCEPTED_BY_CUSTOMER
+            - CANCEL_BY_RESTO
+        isPaid:
+          type: boolean
+        orderedMenu:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderedMenuResponse"
+        orderedCustomMenu:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderedCustomMenuResponse"
+        queueNumber:
+          nullable: true
+          type: number
+    OrderDetailItemBotramResponse:
+      allOf:
+        - $ref: "#/components/schemas/OrderDetailItemNotBotramResponse"
+        - type: object
+          properties:
+            botramGroup:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+    OrderedMenuResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        menu:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            price:
+              type: string
+        quantity:
+          type: number
+        totalPrice:
+          type: number
+        isDibungkus:
+          type: boolean
+        spicyLevel:
+          nullable: true
+          type: number
+    OrderedCustomMenuResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        customMenu:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            price:
+              type: string
+        quantity:
+          type: number
+        totalPrice:
+          type: number
+        isDibungkus:
+          type: boolean
+        spicyLevel:
+          nullable: true
+          type: number
+
   examples:
     # error response
     AuthenticationError:

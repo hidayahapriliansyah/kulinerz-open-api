@@ -7831,7 +7831,55 @@ paths:
           $ref: "#/components/responses/CustomerEmailNotVerifiedError"
         "500":
           $ref: "#/components/responses/ServerError"
-  # /refresh-token:
+  /refresh-token/{refreshTokeValidator}/{token}:
+    get:
+      tags:
+        - Customer
+        - Customer Notification
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Generate new customer access token through refresh token
+      parameters:
+        - name: refreshTokeValidator
+          in: path
+          required: true
+          description: Generate code because access token is expired
+          schema:
+            type: string
+        - name: token
+          in: path
+          required: true
+          description: The actual refresh token
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get new access token
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                            description: new generated contain customer id token
+              example:
+                {
+                  "success": true,
+                  "message": "Refresh token is valid.",
+                  "data": {
+                    "userId": "550e8400-e29b-41d4-a716-44665544000"
+                  }
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "500":
+          $ref: "#/components/responses/ServerError"
 components:
   securitySchemes:
     RestoAccessTokenAuth:

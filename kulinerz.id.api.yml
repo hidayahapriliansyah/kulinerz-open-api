@@ -7285,7 +7285,68 @@ paths:
                 }
         "500":
           $ref: "#/components/responses/ServerError"
-  # /purchase:
+  /purchase:
+    get:
+      tags:
+        - Customer
+        - Customer Purchase
+      security:
+        - CustomerAccessTokenAuth: []
+      description: Get list of Purchased order with status "ACCEPTED_BY_CUSTOMER"
+      parameters:
+        - $ref: "#/components/parameters/PagePagination"
+        - name: startDate
+          in: query
+          required: false
+          description: Filter start date
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          required: false
+          description: Filter start date
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success to get list of purchased order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessAPIResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          orders:
+                            type: array
+                            items:
+                              oneOf:
+                                - $ref: "#/components/schemas/PurchaseOrderNotBotramItemResponse"
+                                - $ref: "#/components/schemas/PurchaseOrderBotramItemResponse"
+                          pages:
+                            type: number
+                          total:
+                            type: number
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorAPIResponse"
+              example:
+                {
+                  "success": false,
+                  "message": "page query is not number."
+                }
+        "401":
+          $ref: "#/components/responses/CustomerAccessTokenError"
+        "403":
+          $ref: "#/components/responses/CustomerEmailNotVerifiedError"
+        "500":
+          $ref: "#/components/responses/ServerError"
   # /account:
   # /notifications:
   # /refresh-token:
@@ -8061,7 +8122,44 @@ components:
         spicyLevel:
           nullable: true
           type: number
-
+    PurchaseOrderNotBotramItemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        createdAt:
+          type: string
+        isGroup:
+          type: string
+        restaurant:
+          type: object
+          properties:
+            id:
+              type: string
+            username:
+              type: string
+            name:
+              type: string
+        isPaid:
+          type: boolean
+        status:
+          type: string
+          default:
+            ACCEPTED_BY_CUSTOMER
+        total:
+          type: number
+    PurchaseOrderBotramItemResponse:
+      allOf:
+      - $ref: "#/components/schemas/PurchaseOrderNotBotramItemResponse"
+      - type: object
+        properties:
+          botramGroup:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
   examples:
     # error response
     AuthenticationError:

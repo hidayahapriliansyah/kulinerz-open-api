@@ -3,7 +3,7 @@ info:
   title: Kulinerz App
   version: "1.0"
   description: OpenAPI for Kulinerz App contains all of service for customer, resto, location, and image upload.
-  termsOfService: https://kulinez.id/terms-of-service
+  termsOfService: https://exampledomain/terms-of-service
   contact:
     email: adimuhamadfirmansyah@gmai.com
     name: Adi Muhamad Firmansyah
@@ -12,7 +12,7 @@ info:
     name: Kulinerz
     url: https://kulinez.id/licence
 servers:
-  - url: https://{environment}.kulinerz.id/api/v2
+  - url: https://{environment}.exampledomain/api/v2
     description: Server Environment
     variables:
       environment:
@@ -10414,5 +10414,3 @@ components:
                 "success": false,
                 "message": "Custom Menu Composition is run out of stock. Please try again later."
               }
-# RESTO_ACCESS_TOKEN_COOKIE_NAME=iertu8r54g734r23u4jrwoefuefudf328HYKDLMGSusr
-# CUSTOMER_ACCESS_TOKEN_COOKIE_NAME=45237rh0341wirjfuwaer723UHFYsdgfwer8wehYYg

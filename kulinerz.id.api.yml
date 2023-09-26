@@ -1377,7 +1377,40 @@ paths:
                       - message
                       - data
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Success to get menus data.",
+                  "data": {
+                    "menus": [
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "name": "Menu apa gituch",
+                        "isActive": true,
+                        "price": 10000
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "name": "Menu apa gituch",
+                        "isActive": true,
+                        "price": 10000
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "name": "Menu apa gituch",
+                        "isActive": true,
+                        "price": 10000
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "name": "Menu apa gituch",
+                        "isActive": true,
+                        "price": 10000
+                      },
+                    ],
+                    "pages": 1,
+                    "total": 10,
+                  }
+                }
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
         "403":
@@ -1665,7 +1698,20 @@ paths:
                       - message
                       - data
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Success to get custom menus data.",
+                  "data": [
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "name": "Pedas"
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "name": "Minuman"
+                      }
+                    ]
+                }
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
         "403":
@@ -1778,7 +1824,16 @@ paths:
                       - message
                       - data
                 example:
-                  # engke
+                  {
+                    "success": true,
+                    "message": "Success to get custom menu category data.",
+                    "data": {
+                      "_id": "61472bb0804c197c43e92d6a",
+                      "name": "Minuman",
+                      "isBungkusable": true,
+                      "maxSpicy": 5
+                    }
+                  }
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
         "404":
@@ -1994,7 +2049,66 @@ paths:
                       - message
                       - data
                 example:
-                  # engke
+                  {
+                    "success": true,
+                    "message": "Success to get custom menu compositions data.",
+                    "data": {
+                      "customMenuCompositions": [
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Cilok",
+                          "price": 1000
+                        },
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Bihun",
+                          "price": 1000
+                        },
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Bihun",
+                          "price": 1000
+                        },
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Bihun",
+                          "price": 1000
+                        },
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Bihun",
+                          "price": 1000
+                        },
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Bihun",
+                          "price": 1000
+                        },
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Bihun",
+                          "price": 1000
+                        },
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Bihun",
+                          "price": 1000
+                        },
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Bihun",
+                          "price": 1000
+                        },
+                        {
+                          "_id": "61472bb0804c197c43e92d6a",
+                          "name": "Bihun",
+                          "price": 1000
+                        }
+                      ],
+                      "pages": 1,
+                      "total": 10
+                    }
+                  }
         "400":
           description: Bad Request
           content:
@@ -2141,7 +2255,19 @@ paths:
                           - stock
                           - images
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Get custom menu composition successfully",
+                  "data": {
+                    "_id": "61472bb0804c197c43e92d6a",
+                    "customMenuCategoryId": "61472bb0804c197c43e92d6a",
+                    "name": "Nama menu",
+                    "description": "Menu ini adalah bla blabla",
+                    "price": 5000,
+                    "stock": 10,
+                    "images": ["http://image.example.com/image.jpg"]
+                  }
+                }
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
         "403":
@@ -2348,7 +2474,30 @@ paths:
                       - message
                       - data
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Success to get notification data.",
+                  "data": {
+                    "notifications": [
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "title": "Title notification 1",
+                        "description": "Description notification 1",
+                        "isRead": true,
+                        "createdAt": "2023-07-20T12:34:56.789Z"
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "title": "Title notification 2",
+                        "description": "Description notification 2",
+                        "isRead": false,
+                        "createdAt": "2023-07-20T12:34:56.789Z"
+                      }
+                    ],
+                    "pages": 1,
+                    "total": 2
+                  }
+                }
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
         "403":
@@ -2563,7 +2712,56 @@ paths:
                           total:
                             type: number
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Getting order data successfully.",
+                  "data": {
+                    "orders": [
+                      {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "isGroup": false,
+                        "customer": {
+                          "avatar": "http://image.example.com/image",
+                          "username": "melanie",
+                          "name": "Melanie"
+                        },
+                        "total": 8000,
+                        "status": "accepted",
+                        "isPaid": true,
+                        "createdAt": "2023-07-20T12:34:56.789Z"
+                      },
+                      {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "isGroup": false,
+                        "customer": {
+                          "avatar": "http://image.example.com/image",
+                          "username": "olivia",
+                          "name": "Olivia"
+                        },
+                        "total": 70000,
+                        "status": "processed",
+                        "isPaid": false,
+                        "createdAt": "2023-07-20T12:34:56.789Z"
+                      },
+                      {
+                        "groupBotramOrderId": "5f8a5c8e8e78d53e610cd75f",
+                        "isGroup": true,
+                        "groupBotram": {
+                          "name": "Makan banyak",
+                          "adminAvatar": "http://image.example.com/image",
+                          "adminUsername": "adi",
+                          "adminName": "Adi Hidayah"
+                        },
+                        "total": 70000,
+                        "status": "accepted",
+                        "isPaid": true,
+                        "createdAt": "2023-07-20T12:34:56.789Z"
+                      },
+                    ],
+                    "pages": 1,
+                    "total": 3
+                  }
+                }
         "400":
           description: Bad Request
           content:
@@ -2690,8 +2888,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderDetailResponse"
-              example:
-              # engke
+              examples:
+                Personal Order:
+                  value:
+                    $ref: "#/components/examples/PersonalOrderDetailResponse"
+                Group Botram Order:
+                  value:
+                    $ref: "#/components/examples/GroupBotramOrderDetailResponse"
         "400":
           description: Bad Request
           content:
@@ -2742,8 +2945,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderDetailResponse"
-              example:
-                # engke
+              examples:
+                Personal Order:
+                  value:
+                    $ref: "#/components/examples/PersonalOrderDetailResponse"
+                Group Botram Order:
+                  value:
+                    $ref: "#/components/examples/GroupBotramOrderDetailResponse"
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
         "403":
@@ -3092,7 +3300,34 @@ paths:
                             total:
                               type: number
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Getting reviews restaurant data successfully.",
+                  "data": {
+                      "reviews": [
+                        {
+                          "_id": "5f8a5c8e8e78d53e610cd75f",
+                          "createdAt": "2023-07-23T15:30:45.123Z",
+                          "customer": {
+                            "username": "melanie"
+                          },
+                          "rating": 4,
+                          "reviewDescription": "loremmmmmmmm"
+                        },
+                        {
+                          "_id": "5f8a5c8e8e78d53e610cd75f",
+                          "createdAt": "2023-07-23T15:30:45.123Z",
+                          "customer": {
+                            "username": "melanie"
+                          },
+                          "rating": 4,
+                          "reviewDescription": "loremmmmmmmm"
+                        }
+                      ],
+                      "page": 1,
+                      "total": 125,
+                  }
+                }
         "400":
           description: Bad Request
           content:
@@ -3178,8 +3413,51 @@ paths:
                                 type: string
                               responseDescription:
                                 type: string
-              example:
-                # engke
+              examples:
+                Not Replied Review:
+                  value:
+                    {
+                      "success": true,
+                      "message": "Get a review data successfully.",
+                      "data": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "createdAt": "2023-07-23T15:30:45.123Z",
+                        "customer": {
+                          "username": "melanie",
+                          "name": "Melanie"
+                        },
+                        "rating": 4,
+                        "hasCustomerBeenShoppingHere": true,
+                        "reviewDescription": "loremmmmmmmm",
+                        "isReplied": false,
+                        "restaurantReviewResponse": null
+                      }
+                    }
+                Replied Review:
+                  value:
+                    {
+                      "success": true,
+                      "message": "Getting today order data successfully.",
+                      "data": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "createdAt": "2023-07-23T15:30:45.123Z",
+                        "updatedAt": "2023-07-23T15:30:45.123Z",
+                        "customer": {
+                          "username": "melanie",
+                          "name": "Melanie"
+                        },
+                        "rating": 4,
+                        "hasCustomerBeenShoppingHere": true,
+                        "reviewDescription": "loremmmmmmmm",
+                        "isReplied": true,
+                        "restaurantReviewResponse": {
+                          "_id": "5f8a5c8e8e78d53e610cd75f",
+                          "createdAt": "2023-07-23T15:30:45.123Z",
+                          "updatedAt": "2023-07-23T15:30:45.123Z",
+                          "responseDescription": "dfgjdifgjerutuvnjfvdjfhusdfusdfksjdfkjsdfkskdf"
+                        }
+                      }
+                    }
         "401":
           $ref: "#/components/responses/RestoAccessTokenError"
         "403":
@@ -3505,7 +3783,12 @@ paths:
                 - email
                 - password
             example:
-              # engke
+              {
+                "name": "Customer Example",
+                "username": "examplerestaurant",
+                "email": "customermermer@gmail.com",
+                "password": "password1234!@#$"
+              }
       responses:
         "201":
           description: Succes to signup and create new user customer account
@@ -3680,7 +3963,16 @@ paths:
                           avatar:
                             type: string
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Get profile data successfully",
+                  "data": {
+                    "_id": "550e8400-e29b-41d4-a716-44665544000",
+                    "avatar": "http://image.avatar.com/image",
+                    "username": "melanie",
+                    "name": "Melanie"
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -3713,7 +4005,11 @@ paths:
                   maxLength: 50
                   pattern: /^[a-zA-Z.,_\s-]+$/
             example:
-              # engke saja
+              {
+                "avatar": "https://apagicu.com/avatar.jpg",
+                "username": "rumahmakancontoh",
+                "name": "Rumah Makan Contoh"
+              }
       responses:
         "200":
           description: Success update profile
@@ -3868,7 +4164,16 @@ paths:
                           avatar:
                             type: string
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Find restaurant successfully",
+                  "data": {
+                    "_id": "615b741fd5afac0012345678",
+                    "avatar": "http://image.avatar.com/image",
+                    "username": "seblakhah",
+                    "name": "Seblak Hah?",
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -3957,7 +4262,41 @@ paths:
                             type: string
                             nullable: true
               example:
-                # engke nya
+                {
+                  "success": true,
+                  "message": "Get restaurant profile data successfully",
+                  "data": {
+                    "_id": "615b741fd5afac0012345678",
+                    "avatar": "http://image.avatar.com/image",
+                    "username": "melanie",
+                    "name": "Seblak Hah?",
+                    "isOpenNow": true,
+                    "rating": {
+                      "mean": restaurant.rating,
+                      "totalReview": countRestaurantReview,
+                    },
+                    "gallery": [
+                      "http://image.avatar.com/image",
+                      "http://image.avatar.com/image2",
+                      "http://image.avatar.com/image3",
+                      "http://image.avatar.com/image4"
+                    ],
+                    "detail": {
+                      "address": "Kp. Bantarhuni RT 02 RW 02 Desa/Kec. Gungungtanjung Kabupaten Tasikmalaya",
+                      "contact": "081234567890",
+                      "openingHour": "10.00",
+                      "closingHour": "21:00",
+                      "daysOff": ["Sunday"]
+                    },
+                    "fasilities": [
+                      "Area Parkir",
+                      "Aksesibilitas Difabel",
+                      "Wi-Fi Gratis",
+                      "Area Merokok / Bebas Asap Rokok"
+                    ],
+                    "locationLink": "https://www.google.com/maps?q=Eiffel+Tower,+Paris,+France"
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -4039,7 +4378,51 @@ paths:
                           total:
                             type: number
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Get restaurant menus data successfully",
+                  "data": {
+                    "menus": [
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "slug": "menu-apa-gituch-sjdhfjsdhfjd-3489",
+                        "image": "http://image.misal.com/image",
+                        "name": "Menu apa gituch",
+                        "price": 10000,
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "slug": "menu-apa-gituch-sjdhfjsdhfjd-3489",
+                        "image": "http://image.misal.com/image",
+                        "name": "Menu apa gituch",
+                        "price": 10000,
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "slug": "menu-apa-gituch-sjdhfjsdhfjd-3489",
+                        "image": "http://image.misal.com/image",
+                        "name": "Menu apa gituch",
+                        "price": 10000,
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "slug": "menu-apa-gituch-sjdhfjsdhfjd-3489",
+                        "image": "http://image.misal.com/image",
+                        "name": "Menu apa gituch",
+                        "price": 10000,
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "slug": "menu-apa-gituch-sjdhfjsdhfjd-3489",
+                        "image": "http://image.misal.com/image",
+                        "name": "Menu apa gituch",
+                        "price": 10000,
+                      }
+                    ],
+                    "pages": 1,
+                    "total": 5,
+                  }
+                }
         "400":
           description: Bad request
           content:
@@ -4138,8 +4521,72 @@ paths:
                             type: number
                           total:
                             type: number
-              example:
-                # engke
+              examples:
+                With User Review:
+                  value:
+                    {
+                      "success": true,
+                      "message": "Get restaurant profile data successfully",
+                      "data": {
+                        "userReview": {
+                            "_id": "61472bb0804c197c43e92d6a",
+                            "rating": 4,
+                            "description": "Hello Adi sayang",
+                            "reviewer": {
+                              "username": "melanie",
+                              "name": "melanie",
+                              "everShoppingHere": false
+                            }
+                        },
+                        "reviews": [
+                          {
+                            "_id": "61472bb0804c197c43e92d6a",
+                            "rating": 4,
+                            "description": "Hello Adi sayang",
+                            "reviewer": {
+                              "username": "melanie",
+                              "name": "melanie",
+                              "everShoppingHere": false
+                            }
+                          },
+                          {
+                            "_id": "61472bb0804c197c43e92d6a",
+                            "rating": 5,
+                            "description": "Hello Adi sayang",
+                            "reviewer": {
+                              "username": "melanie",
+                              "name": "melanie",
+                              "everShoppingHere": true
+                            }
+                          }
+                        ],
+                        "pages": 1,
+                        "total": 10,
+                      }
+                    }
+                Without User Review:
+                  value:
+                    {
+                      "success": true,
+                      "message": "Get restaurant profile data successfully",
+                      "data": {
+                        "userReview": null,
+                        "reviews": [
+                          {
+                            "_id": "61472bb0804c197c43e92d6a",
+                            "rating": 4,
+                            "description": "Hello Adi sayang",
+                            "reviewer": {
+                              "username": "melanie",
+                              "name": "melanie",
+                              "everShoppingHere": false
+                            }
+                          }
+                        ],
+                        "pages": 1,
+                        "total": 1,
+                      }
+                    }
         "400":
           description: Bad Request
           content:
@@ -4449,7 +4896,51 @@ paths:
                                     name:
                                       type: string
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Get restaurant profile data successfully",
+                  "data": {
+                    "totalWishlist": 15,
+                    "wishlistCollection": [
+                      {
+                        "_id": "615b741fd5afac0012345678",
+                        "menu": {
+                          "slug": "menu-apa-nich-hahahahha",
+                          "image": "http://image.example.com/image",
+                          "name": "Menu Apa Nich",
+                          "restaurant": {
+                            "username": "seblakhah",
+                            "name": "Seblak Hah"
+                          }
+                        }
+                      },
+                      {
+                        "_id": "615b741fd5afac0012345678",
+                        "menu": {
+                          "slug": "menu-apa-nich-hahahahha",
+                          "image": "http://image.example.com/image",
+                          "name": "Menu Apa Nich",
+                          "restaurant": {
+                            "username": "seblakhah",
+                            "name": "Seblak Hah"
+                          }
+                        }
+                      },
+                      {
+                        "_id": "615b741fd5afac0012345678",
+                        "menu": {
+                          "slug": "menu-apa-nich-hahahahha",
+                          "image": "http://image.example.com/image",
+                          "name": "Menu Apa Nich",
+                          "restaurant": {
+                            "username": "seblakhah",
+                            "name": "Seblak Hah"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -4675,7 +5166,34 @@ paths:
                                 username:
                                   type: string
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Getting custom menu data successfully.",
+                  "data": [
+                    {
+                      "_id": "550e8400-e29b-41d4-a716-44665544000",
+                      "nama": "Custom Menu Enak",
+                      "createdAt": "2023-07-20T12:34:56.789Z",
+                      "image": "http://image.com/image",
+                      "restaurant": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "username": "seblakhah",
+                        "name": "Seblak Hah",
+                      }
+                    },
+                    {
+                      "_id": "550e8400-e29b-41d4-a716-44665544000",
+                      "nama": "Custom Menu Enak",
+                      "createdAt": "2023-07-20T12:34:56.789Z",
+                      "image": "http://image.com/image",
+                      "restaurant": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "username": "seblakhah",
+                        "name": "Seblak Hah",
+                      }
+                    },
+                  ]
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -4859,7 +5377,56 @@ paths:
                                     price:
                                       type: number
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Getting custom menu data successfully.",
+                  "data": {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "createdAt": "2023-07-20T12:34:56.789Z",
+                      "name": "Custom Menu Enak",
+                      "image": "http://image.com/image",
+                      "restaurant": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "username": "seblakhah",
+                        "name": "Seblak Hah",
+                      },
+                      "customMenuCateogry": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "name": "Seblak",
+                        "isBungkusAble": true,
+                      },
+                      "pickedCustomMenuCompositions": [
+                        {
+                          "_id": "5f8a5c8e8e78d53e610cd75f",
+                          "customMenuComposition": {
+                            "_id": "5f8a5c8e8e78d53e610cd75f",
+                            "image": "http://image.com/image",
+                            "name": "Kerupuk kakap",
+                            "price": 2000
+                          },
+                          "qty": 2,
+                        },
+                        {
+                          "customMenuComposition": {
+                            "_id": "5f8a5c8e8e78d53e610cd75f",
+                            "image": "http://image.com/image",
+                            "name": "Kerupuk kakap",
+                            "price": 2000
+                          },
+                          "qty": 5,
+                        },
+                        {
+                          "customMenuComposition": {
+                            "_id": "5f8a5c8e8e78d53e610cd75f",
+                            "image": "http://image.com/image",
+                            "name": "Sayur yur",
+                            "price": 2000
+                          },
+                          "qty": 5,
+                        }
+                      ]
+                  },
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -4910,7 +5477,23 @@ paths:
                       - name
                       - qty
             example:
-              # engke
+              {
+                "name": "Seblak Bikinan ku yang paling uncchhh",
+                "pickedCustomMenuComposition": [
+                  {
+                    "_id": "5f8a5c8e8e78d53e610cd75f",
+                    "qty": 10
+                  },
+                  {
+                    "_id": "5f8a5c8e8e78d53e610cd75f",
+                    "qty": 1
+                  },
+                  {
+                    "_id": "5f8a5c8e8e78d53e610cd75f",
+                    "qty": 5
+                  }
+                ]
+              }
       responses:
         "200":
           description: Success to update custom menu
@@ -5079,7 +5662,40 @@ paths:
                                   name:
                                     type: string
               example:
-                # engke saja
+                {
+                  "success": true,
+                  "message": "Get botram group invitations data successfully.",
+                  "data": [
+                    {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "groupBotram": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "createdAt": "2023-07-20T12:34:56.789Z",
+                        "name": "Makan Besar gak seeh",
+                        "restaurant": {
+                          "_id": "5f8a5c8e8e78d53e610cd75f",
+                          "username": "seblakhah",
+                          "name": "Seblak Hah",
+                        },
+                        "status": "ordering"
+                      }
+                    },
+                    {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "groupBotram": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "createdAt": "2023-07-20T12:34:56.789Z",
+                        "name": "Makan Besar gak seeh",
+                        "restaurant": {
+                          "_id": "5f8a5c8e8e78d53e610cd75f",
+                          "username": "seblakhah",
+                          "name": "Seblak Hah",
+                        },
+                        "status": "ordering"
+                      }
+                    }
+                  ]
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -5109,7 +5725,28 @@ paths:
                       data:
                         $ref: "#/components/schemas/BotramGroupHighlightDetail"
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Get botram group invitations successfully.",
+                  "data": {
+                    "_id": "5f8a5c8e8e78d53e610cd75f",
+                    "groupBotram": {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "createdAt": "2023-07-20T12:34:56.789Z",
+                      "name": "Makan Besar gak seeh",
+                      "restaurant": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "username": "seblakhah",
+                        "name": "Seblak Hah",
+                      },
+                      "admin": {
+                        "username": "melanie",
+                        "name": "Melanie",
+                      },
+                      "memberCount": 10
+                    }
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -5455,7 +6092,16 @@ paths:
                       avatar:
                         type: string
               example:
-                # engke saja yach adi
+                {
+                  "success": true,
+                  "message": "Find customer sucessfully.",
+                  "data": {
+                    "_id": "550e8400-e29b-41d4-a716-44665544000",
+                    "username": "customerUsername",
+                    "name": "Customer Name",
+                    "avatar": "https://image.com/expamle/"
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -5503,10 +6149,31 @@ paths:
                                 properties:
                                   status:
                                     type: string
+                                    description: if (customer is not a member of group botram and customer is not invited botram group status open member open) or (customer is not a member of grop btraom and customer is invited buat botram is not open member), response will show a review of group botram information with status review …, if customer is a member, status will be ordering, all ready order, or other botram valid status. if customer is not a member, and not invited, and botram is not open, nya response na Unauthorized hehehehe.
                                     enum:
                                       - REVIEW
+                                      - ORDERING
                     example:
-                      # engke heula
+                      {
+                        "success": true,
+                        "message": "Get botram group information successfully.",
+                        "data": {
+                          "_id": "5f8a5c8e8e78d53e610cd75f",
+                          "createdAt": "2023-07-20T12:34:56.789Z",
+                          "name": "Makan Besar gak seeh",
+                          "restaurant": {
+                            "_id": "5f8a5c8e8e78d53e610cd75f",
+                            "username": "seblakhah",
+                            "name": "Seblak Hah",
+                          },
+                          "admin": {
+                            "username": "melanie",
+                            "name": "Melanie",
+                          },
+                          "status": "ordering",
+                          "memberCount": 10,
+                        }
+                      }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -5714,7 +6381,103 @@ paths:
                             items:
                               $ref: "#/components/schemas/BotramMemberOrder"
               example:
-                # engke sabar ...
+                {
+                  "success": true,
+                  "message": "Get Botram group members information successfully.",
+                  "data": {
+                    "grouBotramId": "5f8a5c8e8e78d53e610cd75f",
+                    "myOrder": {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "username": "hidayah",
+                      "name": "HidayahAppp",
+                      "status": "orderready",
+                      "order": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "total": "",
+                        "isPaid": "",
+                        "orderedMenu": [
+                          {
+                            "_id": "5f8a5c8e8e78d53e610cd75f",
+                            "menu": {
+                              "id": "5f8a5c8e8e78d53e610cd75f",
+                              "name": "Seblak Ceker",
+                              "price": 4000
+                            },
+                            "quantity": 1,
+                            "totalPrice": 4000,
+                            "isDibungkus": false,
+                            "spicyLevel": {
+                              "level": 1
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "members": [
+                      {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "username": "hidayah",
+                        "name": "HidayahAppp",
+                        "status": "orderready",
+                        "order": {
+                          "_id": "5f8a5c8e8e78d53e610cd75f",
+                          "total": "",
+                          "isPaid": "",
+                          "orderedMenu": [
+                            {
+                              "_id": "5f8a5c8e8e78d53e610cd75f",
+                              "menu": {
+                                "id": "5f8a5c8e8e78d53e610cd75f",
+                                "name": "Seblak Ceker",
+                                "price": 4000
+                              },
+                              "quantity": 1,
+                              "totalPrice": 4000,
+                              "isDibungkus": false,
+                              "spicyLevel": {
+                                "level": 1
+                              }
+                            },
+                            {
+                              "_id": "5f8a5c8e8e78d53e610cd75f",
+                              "menu": {
+                                "id": "5f8a5c8e8e78d53e610cd75f",
+                                "name": "Seblak Ceker",
+                                "price": 4000
+                              },
+                              "quantity": 1,
+                              "totalPrice": 4000,
+                              "isDibungkus": false
+                            }
+                          ],
+                          "orderedCustomMenu": [
+                            {
+                              "_id": "5f8a5c8e8e78d53e610cd75f",
+                              "menu": {
+                                "id": "5f8a5c8e8e78d53e610cd75f",
+                                "name": "Seblak Ceker",
+                                "price": 4000
+                              },
+                              "quantity": 1,
+                              "totalPrice": 4000,
+                              "isDibungkus": false,
+                              "spicyLevel": {
+                                "level": 1
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "username": "hidayah",
+                        "name": "HidayahAppp",
+                        "status": "ordering",
+                        "order": null
+                      }
+                    ]
+                  }
+                }
         "400":
           description: Bad Request
           content:
@@ -6113,7 +6876,47 @@ paths:
                               totalCartItem:
                                 type: number
               example:
-                # engke saja
+                {
+                  "success": true,
+                  "message": "Get overview cart data successfully.",
+                  "data": {
+                    "mycart": {
+                      "restaurantCount": 2,
+                      "cart": [
+                        {
+                          "restaurant": {
+                            "_id": "4itrutr8tr8t",
+                            "username": "seblakhah",
+                            "name": "Seblak Hah",
+                            "image": "https://image/ererer.jpg",
+                          },
+                          "totalItem": 1
+                        },
+                        {
+                          "restaurant": {
+                            "_id": "4itrutr8tr8t",
+                            "username": "seblakhoh",
+                            "name": "Seblak Hoh",
+                            "image": "https://image/ererer.jpg",
+                          },
+                          "totalItem": 1
+                        },
+                      ]
+                    },
+                    "botramcart": {
+                      "botramGroup": {
+                        "name": "Botram Gorup",
+                        "resturant": {
+                          "id": "4itrutr8tr8t",
+                          "username": "seblakhoh",
+                          "name": "Seblak Hoh",
+                          "image": "https://image/ererer.jpg",
+                        },
+                      },
+                      "totalCartItem": 2,
+                    },
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -6141,7 +6944,31 @@ paths:
                       data:
                         $ref: "#/components/schemas/MyCartResponse"
               example:
-                # engke nyaa
+                {
+                  "success": true,
+                  "message": "Get cart only from my cart successfully.",
+                  "data": {
+                    "restaurantCount": 2,
+                    "cart": [
+                      {
+                        "restaurant": {
+                          "_id": "4itrutr8tr8t",
+                          "username": "seblakhah",
+                          "name": "Seblak Hah"
+                        },
+                        "totalItem": 1
+                      },
+                      {
+                        "restaurant": {
+                          "_id": "4itrutr8tr8t",
+                          "username": "seblakhoh",
+                          "name": "Seblak Hoh"
+                        },
+                        "totalItem": 1
+                      },
+                    ]
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -6184,7 +7011,15 @@ paths:
                 - isDibungkus
                 - quantity
             example:
-              # engke la
+              {
+                "menu": {
+                  "isCustomMenu": false,
+                  "id": "615b741fd5afac0012345678"
+                },
+                "isDibungkus": true,
+                "quantity": 1,
+                "spicyLevel": 2
+              }
       responses:
         "201":
           description: Success to add men to My Cart
@@ -6299,7 +7134,58 @@ paths:
                           items:
                             $ref: "#/components/schemas/CartItemList"
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Get cart only from my cart successfully.",
+                  "data": {
+                    "restaurant": {
+                      "_id": "507f1f77bcf86cd799439011",
+                      "username": "seblakhoy",
+                      "name": "Seblak Hah"
+                    },
+                    "items": {
+                      "menuCarts": [
+                        {
+                          "_id": "615b741fd5afac0012345678",
+                          "menu": {
+                            "_id": "615b741fd5afac0012345678",
+                            "name": "Seblak Ceker",
+                            "price": 5000
+                          },
+                          "isDibungkus": false,
+                          "quantity": 1,
+                          "spicyLevel": 2
+                        },
+                        {
+                          "_id": "615b741fd5afac0012345678",
+                          "menu": {
+                            "_id": "615b741fd5afac0012345678",
+                            "name": "Es Jeruk",
+                            "price": 2000
+                          },
+                          "isDibungkus": false,
+                          "quantity": 1,
+                          "spicyLevel": null
+                        }
+                      ],
+                      "customMenuCarts": [
+                        {
+                          "_id": "615b741fd5afac0012345678",
+                          "customMenu": {
+                            "_id": "615b741fd5afac0012345678",
+                            "name": "Seblak Favorit ku",
+                            "price": 8000
+                          },
+                          "isDibungkus": true,
+                          "quantity": 1,
+                          "spicyLevel": {
+                            "level": 3
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
         "400":
           description: Bad Request
           content:
@@ -6526,7 +7412,18 @@ paths:
               required:
                 - itemIds
             example:
-              # engke nyaaa :)
+              {
+                "itemIds": [
+                  {
+                    "isCustomeMenu": false,
+                    "_id": "3434rter237dfh3343rer"
+                  },
+                  {
+                    "isCustomeMenu": true,
+                    "_id": "3434rter237dfh3343rer"
+                  }
+                ]
+              }
       responses:
         "200":
           description: Success to delete bulk item of cart
@@ -6614,7 +7511,24 @@ paths:
                           totalCartItem:
                             type: number
               example:
-                # engke nyaa
+                {
+                  "success": true,
+                  "message": "Get cart only from my cart successfully.",
+                  "data": {
+                    "botramCart": {
+                      "botramGroup": {
+                        "name": "Nama Botram Group",
+                        "restaurant": {
+                          "id": "ID Restoran",
+                          "username": "Username Restoran",
+                          "name": "Nama Restoran",
+                          "image": "URL Gambar Restoran"
+                        }
+                      },
+                      "totalCartItem": 5
+                    }
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -6660,7 +7574,16 @@ paths:
                 - isDibungkus
                 - quantity
             example:
-              # engke la
+              {
+                "botramGroupId": "615b741fd5afac0012345678",
+                "menu": {
+                  "isCustomMenu": false,
+                  "_id": "615b741fd5afac0012345678"
+                },
+                "isDibungkus": true,
+                "quantity": 1,
+                "spicyLevel": 2
+              }
       responses:
         "201":
           description: Success to add menu to Botram Cart
@@ -6790,7 +7713,65 @@ paths:
                           items:
                             $ref: "#/components/schemas/CartItemList"
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Get cart only from my cart successfully",
+                  "data": {
+                    "botramCart": null,
+                    "botramGroup": {
+                      "_id": "507f1f77bcf86cd799439011",
+                      "name": "Makan Besar",
+                      "restaurant": {
+                        "_id": "507f1f77bcf86cd799439011",
+                        "username": "seblakhah",
+                        "name": "Seblak Hah?"
+                      }
+                    },
+                    "items": {
+                      "menuCarts": [
+                        {
+                          "_id": "615b741fd5afac0012345678",
+                          "menu": {
+                            "_id": "615b741fd5afac0012345678",
+                            "name": "Seblak Ceker",
+                            "price": 5000
+                          },
+                          "isDibungkus": false,
+                          "quantity": 1,
+                          "spicyLevel": {
+                            "level": 2
+                          }
+                        },
+                        {
+                          "_id": "615b741fd5afac0012345678",
+                          "menu": {
+                            "_id": "615b741fd5afac0012345678",
+                            "name": "Es Jeruk",
+                            "price": 2000
+                          },
+                          "isDibungkus": false,
+                          "quantity": 1,
+                          "spicyLevel": null
+                        }
+                      ],
+                      "customMenuCarts": [
+                        {
+                          "_id": "615b741fd5afac0012345678",
+                          "customMenu": {
+                            "_id": "615b741fd5afac0012345678",
+                            "name": "Seblak Favorit ku",
+                            "price": 8000
+                          },
+                          "isDibungkus": true,
+                          "quantity": 1,
+                          "spicyLevel": {
+                            "level": 3
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
         "400":
           description: Bad Request
           content:
@@ -7017,7 +7998,18 @@ paths:
               required:
                 - itemIds
             example:
-              # engke nyaaa :)
+              {
+                "itemIds": [
+                  {
+                    "isCustomeMenu": false,
+                    "_id": "3434rter237dfh3343rer"
+                  },
+                  {
+                    "isCustomeMenu": true,
+                    "_id": "3434rter237dfh3343rer"
+                  }
+                ]
+              }
       responses:
         "200":
           description: Success to delete bulk item of cart
@@ -7087,7 +8079,38 @@ paths:
                 - customerNote
                 - orderedItemList     
             example:
-              # engke nyaa
+              {
+                "restaurantId": "550e8400-e29b-41d4-a716-44665544000",
+                "customerNote": "Jangan pedes pedes",
+                "orderedItemList": {
+                  "menu": [
+                    {
+                      "_id": "56324erefdfermfk3438e",
+                      "quantity": 4,
+                      "isDibungkus": false,
+                      "spicyLevel": 4
+                    },
+                    {
+                      "_id": "56324erefdfermfk3438e",
+                      "quantity": 1,
+                      "isDibungkus": true
+                    }
+                  ],
+                  "customMenu": [
+                    {
+                      "_id": "56324erefdfermfk3438e",
+                      "quantity": 4,
+                      "isDibungkus": false,
+                      "spicyLevel": 4
+                    },
+                    {
+                      "_id": "56324erefdfermfk3438e",
+                      "quantity": 1,
+                      "isDibungkus": true
+                    }
+                  ]
+                }
+              }
       responses:
         "201":
           description: Success to create order
@@ -7198,7 +8221,46 @@ paths:
                               name:
                                 type: string
               example:
-                # engke nyaaa :)
+                {
+                  "success": true,
+                  "message": "Getting purchase data successfully.",
+                  "data": 
+                    {
+                      "orders": [
+                    {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "createdAt": "2023-07-20T12:34:56.789Z",
+                      "isGroup": false,
+                      "isPaid": true, // kalau purchase udah true kalau order mah boolean
+                      "restaurant": {
+                        "id": "fsdfsdf",
+                        "username": "hello",
+                        "name": "Restaurnatname",
+                      },
+                      "total": 4000,
+                      "status": "done",
+                    },
+                    {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "createdAt": "2023-07-20T12:34:56.789Z",
+                      "isGroup": true,
+                      "restaurant": {
+                          "id": "fsdfsdf",
+                          "username": "hello",
+                          "name": "Restaurnatname",
+                        },
+                      "botramGroup": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "name": "Makan Besar"
+                      },
+                      "total": 4000,
+                      "status": "done",
+                    },
+                  ],
+                    "pages": 10,
+                    "total": 120
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -7230,7 +8292,43 @@ paths:
                           - $ref: "#/components/schemas/OrderDetailItemNotBotramResponse"
                           - $ref: "#/components/schemas/OrderDetailItemBotramResponse"
               example:
-                # engke nya ...
+                {
+                  "success": true,
+                  "message": "Getting order data successfully.",
+                  "data": {
+                    "_id": "5f8a5c8e8e78d53e610cd75f",
+                    "createdAt": "2023-07-20T12:34:56.789Z",
+                    "isGroup": true,
+                    "botramGroup": {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "name": "Makan makan"
+                    },
+                    "restaurant": {
+                      "username": "melanie",
+                      "name": "Melanie"
+                    },
+                    "status": "accepted",
+                    "isPaid": true,
+                    "orderedMenu": [
+                      {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "menu": {
+                          "id": "5f8a5c8e8e78d53e610cd75f",
+                          "name": "Seblak Ceker",
+                          "price": 4000,
+                        },
+                        "quantity": 1,
+                        "totalPrice": 4000,
+                        "isDibungkus": false,
+                        "spicyLevel": {
+                          "level": 1
+                        }
+                      }
+                    ],
+                    "orderedCustomMenu": [],
+                  }
+                }
+
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -7353,6 +8451,47 @@ paths:
                             type: number
                           total:
                             type: number
+              example:
+                {
+                  "success": true,
+                  "message": "Getting purchase data successfully.",
+                  "data": 
+                    {
+                      "orders": [
+                    {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "createdAt": "2023-07-20T12:34:56.789Z",
+                      "isGroup": false,
+                      "isPaid": true, // kalau purchase udah true kalau order mah boolean
+                      "restaurant": {
+                        "id": "fsdfsdf",
+                        "username": "hello",
+                        "name": "Restaurnatname",
+                      },
+                      "total": 4000,
+                      "status": "done",
+                    },
+                    {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "createdAt": "2023-07-20T12:34:56.789Z",
+                      "isGroup": true,
+                      "restaurant": {
+                          "id": "fsdfsdf",
+                          "username": "hello",
+                          "name": "Restaurnatname",
+                        },
+                      "botramGroup": {
+                        "_id": "5f8a5c8e8e78d53e610cd75f",
+                        "name": "Makan Besar"
+                      },
+                      "total": 4000,
+                      "status": "done",
+                    },
+                  ],
+                      "pages": 10,
+                      "total": 120
+                    }
+                }
         "400":
           description: Bad Request
           content:
@@ -7696,7 +8835,30 @@ paths:
                       - message
                       - data
               example:
-                # engke
+                {
+                  "success": true,
+                  "message": "Success to get notification data.",
+                  "data": {
+                    "notifications": [
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "title": "Title notification 1",
+                        "description": "Description notification 1",
+                        "isRead": true,
+                        "createdAt": "2023-07-20T12:34:56.789Z",
+                      },
+                      {
+                        "_id": "61472bb0804c197c43e92d6a",
+                        "title": "Title notification 2",
+                        "description": "Description notification 2",
+                        "isRead": false,
+                        "createdAt": "2023-07-20T12:34:56.789Z",
+                      }
+                    ],
+                    "pages": 1,
+                    "total": 10,
+                  }
+                }
         "401":
           $ref: "#/components/responses/CustomerAccessTokenError"
         "403":
@@ -8742,6 +9904,128 @@ components:
               "token": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
             },
         }
+    PersonalOrderDetailResponse:
+      value:
+        {
+          "success": true,
+          "message": "Getting order data successfully.",
+          "data": {
+            "_id": "5f8a5c8e8e78d53e610cd75f",
+            "createdAt": "2023-07-20T12:34:56.789Z",
+            "isGroup": false,
+            "customer": {
+              "username": "melanie",
+              "name": "Melanie"
+            },
+            "status": "accepted",
+            "isPaid": true,
+            "orderedMenu": [
+              {
+                "_id": "5f8a5c8e8e78d53e610cd75f",
+                "menuId": "5f8a5c8e8e78d53e610cd75f",
+                "menuName": "Seblak Ceker",
+                "menuPrice": 4000,
+                "quantity": 1,
+                "totalPrice": 4000,
+                "isDibungkus": false,
+                "spicyLevel": {
+                  "level": 1
+                }
+              },
+              {
+                "_id": "5f8a5c8e8e78d53e610cd75f",
+                "menuId": "5f8a5c8e8e78d53e610cd75f",
+                "menuName": "Seblak Ceker",
+                "menuPrice": 4000,
+                "quantity": 2,
+                "totalPrice": 8000,
+                "isDibungkus": false,
+                "spicyLevel": {
+                  "level": 5
+                }
+              },
+              {
+                "_id": "5f8a5c8e8e78d53e610cd75f",
+                "menuId": "5f8a5c8e8e78d53e610cd75f",
+                "menuName": "Es Jeruk",
+                "menuPrice": 2000,
+                "quantity": 1,
+                "totalPrice": 2000,
+                "isDibungkus": false,
+                "spicyLevel": null
+              },
+            ],
+            "orderedCustomMenu": [],
+          }
+        }
+    GroupBotramOrderDetailResponse:
+      value:
+        {
+          "success": true,
+          "message": "Getting order data successfully.",
+          "data": {
+            "_id": "5f8a5c8e8e78d53e610cd75f",
+            "createdAt": "2023-07-20T12:34:56.789Z",
+            "isGroup": true,
+            "groupBotram": {
+              "_id": "5f8a5c8e8e78d53e610cd75f",
+              "name": "Makan Besar",
+              "admin": {
+                "username": "melanie",
+                "name": "Melanie",
+              },
+            },
+            "status": "done",
+            "isPaid": false,
+            "memberOrder": [
+              {
+                "member": {
+                  "username": "melanie",
+                  "name": "Melanie"
+                },
+                "order": {
+                  "isPaid": false,
+                  "orderedMenu": [
+                    {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "menuId": "5f8a5c8e8e78d53e610cd75f",
+                      "menuName": "Seblak Ceker",
+                      "menuPrice": 4000,
+                      "quantity": 1,
+                      "totalPrice": 4000,
+                      "isDibungkus": false,
+                      "spicyLevel": {
+                        "level": 1
+                      },
+                    },
+                    {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "menuId": "5f8a5c8e8e78d53e610cd75f",
+                      "menuName": "Es Jeruk",
+                      "menuPrice": 2000,
+                      "quantity": 1,
+                      "totalPrice": 2000,
+                      "isDibungkus": false,
+                      "spicyLevel": null
+                    }
+                  ],
+                  "orderedCustomMenu": [
+                    {
+                      "_id": "5f8a5c8e8e78d53e610cd75f",
+                      "customMenuId": "5f8a5c8e8e78d53e610cd75f",
+                      "customMenuName": "Es Jeruk",
+                      "customMenuPrice": 2000,
+                      "quantity": 1,
+                      "totalPrice": 2000,
+                      "isDibungkus": false,
+                      "spicyLevel": null
+                    }
+                  ],
+                },
+              }
+            ],
+          }
+        }
   requestBodies:
     CreateAndUpdateEtalase:
       content:
@@ -8795,7 +10079,16 @@ components:
               - price
               - images
           example:
-            # engke
+            {
+              "name": "Nama menu",
+              "isBungkusable": true,
+              "description": "Menu ini adalah bla blabla",
+              "etalaseId": "61472bb0804c197c43e92d6a",
+              "price": 5000,
+              "stock": 10,
+              "images": ["http://image.example.com/image.jpg"],
+              "maxSpicy": 2
+            }
     CreateAndUpdateCustomMenuCategory:
       content:
         application/json:
@@ -8848,7 +10141,25 @@ components:
               - price
               - images
           example:
-            # engke
+            {
+              "restaurantId": "5f8a5c8e8e78d53e610cd75f",
+              "customMenuCateogryId": "5f8a5c8e8e78d53e610cd75f",
+              "name": "Seblak Bikinan ku yang paling uncchhh",
+              "pickedCustomMenuComposition": [
+                {
+                  "_id": "5f8a5c8e8e78d53e610cd75f",
+                  "qty": 10
+                },
+                {
+                  "_id": "5f8a5c8e8e78d53e610cd75f",
+                  "qty": 1
+                },
+                {
+                  "_id": "5f8a5c8e8e78d53e610cd75f",
+                  "qty": 5
+                }
+              ]
+            }
     CreateAndUpdateReviewResponse:
       content:
         application/json:
@@ -8860,7 +10171,9 @@ components:
                 minLength: 1
                 maxLength: 250
           example:
-              # engke
+              {
+                "responseDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer auctor, massa et ultrices vehicula, urna tortor dictum sapien, id vestibulum tortor ligula ut urna. Sed consequat neque non nibh eleifend consectetur. Aliquam erat volutpat. Aliquam vitae sem elit. Vestibulum faucibus tempus libero ut aliquet. Morbi ullamcorper id libero eu dapibus. Ut neque diam, eleifend at nisi at, semper tempus nisi. Quisque at dolor vel mi mollis dapibus et quis orci. Morbi ut eros sit amet sapien tempus eleifend."
+              }
     CreateAndUpdateReview:
       content:
         application/json:
@@ -8880,7 +10193,10 @@ components:
                 type: string
                 maxLength: 250
           example:
-            # engke
+            {
+              "rating": 5,
+              "description": "Mantaaaaaaaaaaaaaaaaaaaaaaaaap"
+            }
   responses:
     RestoAccessTokenError:
       description: Access Token Error
